@@ -2,27 +2,43 @@
 ## Émie Leclerc, Charliane Larose, Lorélie Gélinas
 
 #### Installation des packages ####
-REQUIREDPACKAGES <- c("magrittr", "derivmkts", "httr")
-## Install (if not installed) and load necessary packages.
-for (package in REQUIREDPACKAGES) {
-    if (!package %in% installed.packages()[, 1])
-        install.packages(package)
-    eval(bquote(library(.(package))))
+
+liste <-c("magrittr", "derivmkts", "httr")
+
+installation <- liste %in% installed.packages()
+if(length(liste[!installation]) > 0) {
+  install.packages(liste[!installation], repos = "https://cran.rstudio.com/")
 }
 
-library(derivmkts)
 
 #### Importation des données ####
 ## importation taux banque du canada dans 5 dernières années
 banque_can <- read.csv("taux_can.csv")
-## moyenne taux banque du canada, mensuelle
-moy_taux_can <- mean(banque_can[, 2])/100
+
 
 ## importation données mensuelles historiques
 data_histo <- read.csv("DonnéesTPGRF2(version2).csv")
-data_histo <- data_histo[-1, c(1, 13)]
+data_histo <- data_histo[-1, c(13)]
+
 
 #### Approximation des paramètres arbre binomial ####
+
+## moyenne taux banque du canada, mensuelle
+moy_taux_can <- mean(banque_can[, 2])/100
+
+h <- 1/12 # les données sont mensuelles
+
+longeur_donnee <- length(data_histo)
+
+donnee_ln <- numeric(longeur_donnee) # pour le remplir
+
+donnee_ln[1] <- NA
+
+for (i in 2:longeur_donnee){
+  (donnee_ln[i] <- log(data_histo[i]/data_histo[i-1]))
+}
+
+
 
 
 
