@@ -20,11 +20,11 @@ banque_can <- read.csv("taux_can.csv")
 data_histo <- read.csv("DonnéesTPGRF2(version2).csv")
 data_histo <- data_histo[-1, c(13)]
 
-
+##### Question 1 ######
 #### Approximation des paramètres arbre binomial ####
 
 ## moyenne taux banque du canada, mensuelle
-moy_taux_can <- mean(banque_can[, 2])/100
+r <- mean(banque_can[, 2])/100
 
 h <- 1/12 # les données sont mensuelles
 
@@ -38,12 +38,14 @@ for (i in 2:longeur_donnee){
   (donnee_ln[i] <- log(data_histo[i]/data_histo[i-1]))
 }
 
+sig <- sd(donnee_ln[-1])/sqrt(h)
+
+u <- exp(r*h + sig*sqrt(h))
+d <- exp(r*h - sig*sqrt(h))
+p <- (exp(r*h)-d)/(u-d)
 
 
-
-
-
-
+##### Question 2 ######
 
 
 
