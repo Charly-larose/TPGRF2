@@ -22,7 +22,7 @@ data_histo <- data_histo[-1, c(13)]
 
 ## création de la fonction pour faire les arbres binomiale ####
 ### pour voir le code source écrire nom de la foncton sans parenthèse
-View(binomplot)
+#View(binomplot)
 arbre <- function (s, k, v, r, tt, d, nstep, putopt = FALSE, american = TRUE,
                    plotvalues = FALSE, plotarrows = FALSE, drawstrike = TRUE,
                    pointsize = 4, ylimval = c(0, 0), saveplot = FALSE, saveplotfn = "binomialplot.pdf",
@@ -69,7 +69,7 @@ arbre <- function (s, k, v, r, tt, d, nstep, putopt = FALSE, american = TRUE,
                      ifelse(tt == 1, " an,", " ans,"), " Prix = ",
                      format(oppricetree[1, 1], digits = 5)))
     if (drawstrike)
-        abline(h = k)
+        abline(h = k, lty=2)
     yoffset <- ifelse(setylim, 0.03 * (ylimval[2] - ylimval[1]),
                       0.03 * max(stree))
     if (plotarrows) {
@@ -145,21 +145,31 @@ p <- (exp(r*h)-d)/(u-d)
 
 ##### Question 2 ######
 ### modèle à 4 périodes, illustrer les arbres
+
+#### Dans l'arbre j'ai mis ligne pointillé pour prix d'exercice, est-ce qu'on enlève????
+
 ## option de vente européenne, k = 95, prix initial de l'indice = 100
-arbre(s = 100, k = 95, v = sig, r = r, tt = 1, d = 0, nstep =4, american = FALSE,
+arbre(s = 100, k = 95, v = sig, r = r, tt = 1, d = 0, nstep = 4, american = FALSE,
       putopt = TRUE, plotvalues = TRUE, plotarrows = TRUE, returnprice = TRUE,
       drawstrike = TRUE)
 ## option d'achat américaine k = 110, prix initial de l'indice = 100
-arbre(s = 100, k = 110, v = sig, r = r, tt = 1, d = 0, nstep =4, american = TRUE,
+arbre(s = 100, k = 110, v = sig, r = r, tt = 1, d = 0, nstep = 4, american = TRUE,
       putopt = FALSE, plotvalues = TRUE, plotarrows = TRUE, returnprice = TRUE,
       drawstrike = TRUE)
 
 ### modèle à 52 périodes, seulement calculer les prix
 ## option de vente européenne, k = 95, prix initial de l'indice = 100
+binomopt(s = 100, k = 95, v = sig, r = r, tt = 1, d = 0, nstep = 52, american = F,
+         putopt = T)
 ## option d'achat américaine k = 110, prix initial de l'indice = 100
+binomopt(s = 100, k = 110, v = sig, r = r, tt = 1, d = 0, nstep = 52, american = T,
+         putopt = F)
 ## option asiatiques
-
-
-
-
+## option d'achat asiatique de type « option d'achat sur moyenne arithmétique »
+# k = 110
+# m aucune idée quoi mettre ????
+arithavgpricecv(s = 100, k = 110, v = sig, r = r, t =1, d = 0, m = )
+## option d'achat asiatique de type « option de vente à barrière désactivante »
+# barrière = 105, k = 95
+# Aucune idée comment faire, faudrait voir les notes
 
