@@ -3,9 +3,9 @@
 
 #### Installation des packages ####
 
-liste <-c("magrittr", "derivmkts", "httr")
+liste <-c("magrittr", "derivmkts", "httr","ggplot2")
 
-installation <- liste %in% installed.packages()
+linstallation <- liste %in% installed.packages()
 if(length(liste[!installation]) > 0) {
   install.packages(liste[!installation], repos = "https://cran.rstudio.com/")
 }
@@ -147,23 +147,31 @@ p <- (exp(r*h)-d)/(u-d)
 ### modèle à 4 périodes, illustrer les arbres
 
 #### Dans l'arbre j'ai mis ligne pointillé pour prix d'exercice, est-ce qu'on enlève????
+## Oui, je l'enleverais
 
-## option de vente européenne, k = 95, prix initial de l'indice = 100
+
+## option de vente européenne, k = 95, prix initial de l'indice = 100r
+r_log <- log(1+r) # transformation pour avoir un r composé continuellement
+
 arbre(s = 100, k = 95, v = sig, r = r_log, tt = 1, d = 0, nstep = 4, american = FALSE,
       putopt = TRUE, plotvalues = TRUE, plotarrows = TRUE, returnprice = TRUE,
       drawstrike = TRUE)
 ## option d'achat américaine k = 110, prix initial de l'indice = 100
-arbre(s = 100, k = 110, v = sig, r = r, tt = 1, d = 0, nstep = 4, american = TRUE,
+arbre(s = 100, k = 110, v = sig, r = r_log, tt = 1, d = 0, nstep = 4, american = TRUE,
       putopt = FALSE, plotvalues = TRUE, plotarrows = TRUE, returnprice = TRUE,
       drawstrike = TRUE)
 
-### modèle à 52 périodes, seulement calculer les prix
+### modèle à 52 périodes, seulement calculer les prix 
 ## option de vente européenne, k = 95, prix initial de l'indice = 100
 binomopt(s = 100, k = 95, v = sig, r = r_log, tt = 1, d = 0, nstep = 52, american = F,
          putopt = T)
 ## option d'achat américaine k = 110, prix initial de l'indice = 100
 binomopt(s = 100, k = 110, v = sig, r = r_log, tt = 1, d = 0, nstep = 52, american = T,
          putopt = F)
+
+
+
+
 ## option asiatiques
 ## option d'achat asiatique de type « option d'achat sur moyenne arithmétique »
 # k = 110
@@ -172,4 +180,47 @@ arithavgpricecv(s = 100, k = 110, v = sig, r = r, t =1, d = 0, m = )
 ## option d'achat asiatique de type « option de vente à barrière désactivante »
 # barrière = 105, k = 95
 # Aucune idée comment faire, faudrait voir les notes
+
+
+### Question 3 ###
+## graphique pour illustrer la relation entre le prix d'exercice et le prix à
+## payer pour les options d'achat et ventes européenne 
+
+## CALL 
+k <- seq(from = 50, to = 200, by = 5)
+prix_achat <- sapply(k, function(k) binomopt(s = 100, k = k, v = sig, r = r_log, tt = 1, d = 0, nstep = 52, american = F,
+                                        putopt = F, returntrees = T)$price)
+
+data_graph <- data.frame(prix_exercice = k, prix_call = prix_achat)
+
+graph_call <- ggplot(data_graph, aes(x = prix_exercice, y = prix_call)) + geom_line(linewidth = 1.2) +
+  labs(
+    title = "Prix d'un option d'achat européenne selon différentes valeurs d'exercice (k)",
+    subtitle = "Le prix initial du sous-jacent est de 100 $ avec le modèle binomial à 52 périodes",
+    x = "Prix d'exercice ($)",
+    y = "Prix de l'option ($)",)+ theme_classic() + theme(
+      plot.title = element_text(size = 12, face = "bold"),
+      axis.title = element_text(size = 12)
+    )
+
+## PUT
+k <- seq(from = 0, to = 150, by = 5)
+
+prix_put <- sapply(k, function(k) binomopt(s = 100, k = k, v = sig, r = r_log, tt = 1, d = 0, nstep = 52, american = F,
+                                             putopt = T, returntrees = T)$price)
+
+data_graph <- data.frame(prix_exercice = k, prix_put = prix_put)
+
+graph_put <- ggplot(data_graph, aes(x = prix_exercice, y = prix_put)) + geom_line(linewidth = 1.2) +
+  labs(
+    title = "Prix d'un option de vente européenne selon différentes valeurs d'exercice (k)",
+    subtitle = "Le prix initial du sous-jacent est de 100 $ avec le modèle binomial à 52 périodes",
+    x = "Prix d'exercice ($)",
+    y = "Prix de l'option ($)",)+ theme_classic() + theme(
+      plot.title = element_text(size = 12, face = "bold"),
+      axis.title = element_text(size = 12)
+    )
+
+
+
 
