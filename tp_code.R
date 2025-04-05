@@ -5,11 +5,11 @@
 
 liste <-c("magrittr", "derivmkts", "httr","ggplot2")
 
-linstallation <- liste %in% installed.packages()
+installation <- liste %in% installed.packages()
 if(length(liste[!installation]) > 0) {
   install.packages(liste[!installation], repos = "https://cran.rstudio.com/")
 }
-
+lapply(liste, require, character.only = TRUE)
 
 #### Importation des données ####
 ## importation taux banque du canada dans 5 dernières années
@@ -187,7 +187,7 @@ arithavgpricecv(s = 100, k = 110, v = sig, r = r, t =1, d = 0, m = )
 ## payer pour les options d'achat et ventes européenne 
 
 ## CALL 
-k <- seq(from = 50, to = 200, by = 5)
+k <- seq(from = 50, to = 250, by = 5)
 prix_achat <- sapply(k, function(k) binomopt(s = 100, k = k, v = sig, r = r_log, tt = 1, d = 0, nstep = 52, american = F,
                                         putopt = F, returntrees = T)$price)
 
@@ -195,7 +195,7 @@ data_graph <- data.frame(prix_exercice = k, prix_call = prix_achat)
 
 graph_call <- ggplot(data_graph, aes(x = prix_exercice, y = prix_call)) + geom_line(linewidth = 1.2) +
   labs(
-    title = "Prix d'un option d'achat européenne selon différentes valeurs d'exercice (k)",
+    title = "Prix d'un option d'achat européenne en fonction de différentes valeurs de prix d'exercice (L)",
     subtitle = "Le prix initial du sous-jacent est de 100 $ avec le modèle binomial à 52 périodes",
     x = "Prix d'exercice ($)",
     y = "Prix de l'option ($)",)+ theme_classic() + theme(
@@ -204,7 +204,7 @@ graph_call <- ggplot(data_graph, aes(x = prix_exercice, y = prix_call)) + geom_l
     )
 
 ## PUT
-k <- seq(from = 0, to = 150, by = 5)
+k <- seq(from = 0, to = 200, by = 5)
 
 prix_put <- sapply(k, function(k) binomopt(s = 100, k = k, v = sig, r = r_log, tt = 1, d = 0, nstep = 52, american = F,
                                              putopt = T, returntrees = T)$price)
@@ -213,13 +213,15 @@ data_graph <- data.frame(prix_exercice = k, prix_put = prix_put)
 
 graph_put <- ggplot(data_graph, aes(x = prix_exercice, y = prix_put)) + geom_line(linewidth = 1.2) +
   labs(
-    title = "Prix d'un option de vente européenne selon différentes valeurs d'exercice (k)",
+    title = "Prix d'un option de vente européenne en fonction de différentes valeurs de prix d'exercice (k)",
     subtitle = "Le prix initial du sous-jacent est de 100 $ avec le modèle binomial à 52 périodes",
     x = "Prix d'exercice ($)",
     y = "Prix de l'option ($)",)+ theme_classic() + theme(
       plot.title = element_text(size = 12, face = "bold"),
       axis.title = element_text(size = 12)
     )
+
+
 
 
 

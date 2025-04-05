@@ -20,7 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r paquetages, message=FALSE, eval=TRUE, include=FALSE, echo = FALSE}
 ### Liste des paquetages
-liste <-c("magrittr", "derivmkts", "httr")
+liste <-c("magrittr", "derivmkts", "httr","ggplot2")
 
 installation <- liste %in% installed.packages()
 if(length(liste[!installation]) > 0) {
@@ -220,3 +220,86 @@ call110_52p = binomopt(s = 100, k = 110, v = sig, r = r_log, tt = 1, d = 0, nste
 ```
 
 Le prix pour l'option de vente européenne avec un prix d'exercice de 95\$, mais avec 52 périodes, est de `r round(put95_52p, 4)`\$. Le prix de l'option d'achat américaine avec prix d'exercice de 110\$ est `r round(call110_52p, 4)`\$.
+
+\newpage
+# 3.Relation du prix de l'option et du prix d'exercice  
+## Option d'achat  
+On constate la relation du prix à payer pour l'option d'achat européenne présentée
+à la section 2, celle avec le modèle 52 périodes, grâce à la **figure x**.  
+
+```{r graphique achat 52 periodes, echo = FALSE, include = TRUE, fig.cap= "Graphique du prix d'une option d'achat en fonction du prix d'exercice", fig.width=9, fig.height=5,results='hide'}
+k <- seq(from = 50, to = 250, by = 5)
+prix_achat <- sapply(k, function(k) binomopt(s = 100, k = k, v = sig, r = r_log, tt = 1, d = 0, nstep = 52, american = F,
+                                        putopt = F, returntrees = T)$price)
+
+data_graph <- data.frame(prix_exercice = k, prix_call = prix_achat)
+
+graph_call <- ggplot(data_graph, aes(x = prix_exercice, y = prix_call)) +
+  geom_line(linewidth = 1.2, aes(color = "Prix initial = 100$, n = 52")) +
+  scale_color_manual(
+    name = "Paramètres",
+    values = c("Prix initial = 100$, n = 52" = "black")
+  ) +
+  labs(
+    x = "Prix d'exercice ($)",
+    y = "Prix de l'option ($)"
+  ) +
+  theme_classic() +
+  theme(
+    plot.title = element_text(size = 12, face = "bold"),
+    axis.title = element_text(size = 12),
+    legend.position.inside = c(0.05, 0.95),
+    legend.background = element_rect(fill = "white", color = "black"),
+    legend.title = element_text(size = 10),
+    legend.text = element_text(size = 9)
+  )
+graph_call
+
+```
+
+La figure X illustre une relation inversement proportionnelle entre le prix à payer 
+pour l’option d’achat et le prix d’exercice. Ce comportement est attendu : plus 
+le prix d’exercice est faible, plus le prix à payer pour l’option sera élevé, car
+il est plus avantageux d’acheter l’actif sous-jacent à un prix inférieur que sa valeur 
+actuelle. À l’inverse, un prix d’exercice élevé entrain une diminution du prix de
+l'option puisqu’il est moins probable qu’elle soit exercée, car il est moins avantageux 
+d’acheter l’actif sous-jacent à un prix inférieur que sa valeur actuelle.   
+
+\newpage
+## Option de vente  
+On constate la relation du prix à payer pour l'option de vente européenne présentée
+à la section 2, celle avec le modèle 52 périodes, grâce à la **figure x**.  
+
+```{r graphique vente 52 periodes, echo = FALSE, include = TRUE, fig.cap= "Graphique du prix d'une option de vente en fonction du prix d'exercice", fig.width=9, fig.height=5,results='hide'}
+k <- seq(from = 0, to = 200, by = 5)
+prix_put <- sapply(k, function(k) binomopt(s = 100, k = k, v = sig, r = r_log, tt = 1, d = 0, nstep = 52, american = F,
+                                        putopt = T, returntrees = T)$price)
+
+data_graph <- data.frame(prix_exercice = k, prix_put = prix_put)
+
+graph_put <- ggplot(data_graph, aes(x = prix_exercice, y = prix_put)) +
+  geom_line(linewidth = 1.2, aes(color = "Prix initial = 100$, n = 52")) +
+  scale_color_manual(
+    name = "Paramètres",
+    values = c("Prix initial = 100$, n = 52" = "black")
+  ) +
+  labs(
+    x = "Prix d'exercice ($)",
+    y = "Prix de l'option ($)"
+  ) +
+  theme_classic() +
+  theme(
+    plot.title = element_text(size = 12, face = "bold"),
+    axis.title = element_text(size = 12),
+    legend.position.inside = c(0.05, 0.95),
+    legend.background = element_rect(fill = "white", color = "black"),
+    legend.title = element_text(size = 10),
+    legend.text = element_text(size = 9)
+  )
+graph_put
+
+```
+La figure illustre une relation directement proportionnelle entre le prix à payer 
+pour l'option de vente et le prix d'exercice. Ce comportement est attendu : plus 
+le prix d'exercice est élevé, plus il y a de chances que l'option soit exercée.
+
