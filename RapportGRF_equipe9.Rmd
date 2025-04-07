@@ -221,7 +221,7 @@ On relève que l'option de vente européenne est levée pour seulement deux prix
 L'évolution du prix du sous-jacent pour l'option d'achat européenne avec 4 périodes avec un prix d'exercice de 110$ est illustré ci-dessous.
 
 ```{r code_arbre_call110, echo = FALSE, include = TRUE, fig.height=8, results='hide'}
-## option d'achat américaine k = 110, prix initial de l'indice = 100
+## option d'achat européenne k = 110, prix initial de l'indice = 100
 arbre(s = 100, k = 110, v = sig, r = r_log, tt = 1, d = 0, nstep = 4, american = FALSE,
       putopt = FALSE, plotvalues = TRUE, plotarrows = TRUE, returnprice = TRUE,
       drawstrike = FALSE)
@@ -236,6 +236,7 @@ On observe que l'option de d'achat européenne est levée pour seulement deux pr
 ## option de vente européenne avec prix d'exercice de 95, prix initial de l'indice = 100
 put95_52p = binomopt(s = 100, k = 95, v = sig, r = r_log, tt = 1, d = 0, nstep = 52, american = F,
          putopt = T)
+
 ## option d'achat européenne avec prix d'exercice de 110, prix initial de l'indice = 100
 call110_52p = binomopt(s = 100, k = 110, v = sig, r = r_log, tt = 1, d = 0, nstep = 52, american = F,
          putopt = F)
