@@ -87,6 +87,18 @@ p=\frac{e^{rh}-d}{u-d}.
 $$
 Comme l'énoncé mentionne une absence de dividende, on suppose que $\delta = 0$.
 
+Dans le cas de l'arbre à 4 périodes, on a que 
+$$
+u = e^{(0.0214) * 1/4+0.2338*\sqrt{1/4}} = 1.13,
+$$
+$$
+d = e^{(0.0214)*1/4-0.2338*\sqrt{1/4}} = 0.89
+$$
+et
+
+$$
+p=\frac{e^{0.0214*1/4}-0.89}{1.13-0.89}=0.48
+$$
 ## Arbres binomiaux à 4 prériodes
 
 
