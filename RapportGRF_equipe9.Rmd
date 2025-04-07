@@ -65,15 +65,30 @@ for (i in 2:longeur_donnee){
 }
 
 sig <- sd(donnee_ln[-1])/sqrt(h)
+u_quatreper <- exp(r_log*1/4+sig*sqrt(1/4))
+d_quatreper <- exp(r_log*1/4-sig*sqrt(1/4))
+p_quatreper <- (exp(r_log*1/4)-d_quatreper)/(u_quatreper-d_quatreper)
+
+u_52per <- exp(r_log*1/52+sig*sqrt(1/52))
+d_52per <- exp(r_log*1/52-sig*sqrt(1/52))
+p_52per <- (exp(r_log*1/52)-d_quatreper)/(u_quatreper-d_quatreper)
 ```
 
 Comme les données fournies avec l'énoncé sont mensuelles, on a que $h = 1/12$. La valeur finale de $\hat{\sigma}$ est `r round(sig*100, 2)`%.
 
 La valeur du taux sans risque est estimée grâce à la moyenne des taux d'intérêts effectifs annuels de chaque mois des cinq dernières années (2019-03 au 2024-02). L'estimation du taux sans risque a pour valeur $r =$ `r round(r*100, 2)`%. Comme le taux est utilisé sous forme continue dans les formules d'arbre binomial, $r$ a une valeur de `r round(r_log*100, 2)`% de façon continue.
 
+Pour construire les arbres binomiaux, les valeurs de $u$, $d$ et $p$ sont nécessaires. Les formules suivantes permettent d'obtenir ces valeurs
 
-# 2.Arbres binomiaux
-
+$$
+u = e^{(r-\delta)h+\sigma\sqrt{h}},
+$$
+$$
+d = e^{(r-\delta)h-\sigma\sqrt{h}},
+$$
+$$
+p=\frac{e^{rh}-d}{u-d}.
+$$
 Pour construire les arbres binomiaux, les valeurs de $u$, $d$ et $p$ sont nécessaires. Les formules suivantes permettent d'obtenir ces valeurs
 
 $$
@@ -87,19 +102,15 @@ p=\frac{e^{rh}-d}{u-d}.
 $$
 Comme l'énoncé mentionne une absence de dividende, on suppose que $\delta = 0$.
 
-Dans le cas de l'arbre à 4 périodes, on a que 
-$$
-u = e^{(0.0214) * 1/4+0.2338*\sqrt{1/4}} = 1.13,
-$$
-$$
-d = e^{(0.0214)*1/4-0.2338*\sqrt{1/4}} = 0.89
-$$
-et
+Pour l'arbre binomial à 4 périodes, on obtient que $u =$ `r round(u_quatreper, 2)`, $d =$ `r round(d_quatreper, 2)` et $p =$ `r round(p_quatreper*100, 2)`%.
 
-$$
-p=\frac{e^{0.0214*1/4}-0.89}{1.13-0.89}=0.48
-$$
-## Arbres binomiaux à 4 prériodes
+Pour l'arbre binomial à 52 périodes, on obtient que $u =$ `r round(u_52per, 2)`, $d =$ `r round(d_52per, 2)` et $p =$ `r round(p_52per*100, 2)`%.
+
+# 2.Arbres binomiaux
+
+La présente section montre la démarche et les graphiques des arbres binomiaux demandés. La fonction `binomopt` du paquetage `derivmkts` a été grandement utilisée.
+
+## Arbres binomiaux à 4 périodes
 
 
 ```{r code_arbre_1, echo = FALSE, eval = TRUE}
