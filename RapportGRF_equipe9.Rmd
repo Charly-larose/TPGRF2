@@ -65,13 +65,13 @@ for (i in 2:longeur_donnee){
 }
 
 sig <- sd(donnee_ln[-1])/sqrt(h)
-u_quatreper <- exp(r_log*1/4+sig*sqrt(1/4))
-d_quatreper <- exp(r_log*1/4-sig*sqrt(1/4))
+u_quatreper <- exp((r_log*1/4)+sig*sqrt(1/4))
+d_quatreper <- exp((r_log*1/4)-sig*sqrt(1/4))
 p_quatreper <- (exp(r_log*1/4)-d_quatreper)/(u_quatreper-d_quatreper)
 
-u_52per <- exp(r_log*1/52+sig*sqrt(1/52))
-d_52per <- exp(r_log*1/52-sig*sqrt(1/52))
-p_52per <- (exp(r_log*1/52)-d_quatreper)/(u_quatreper-d_quatreper)
+u_52per <- exp((r_log*1/52)+sig*sqrt(1/52))
+d_52per <- exp((r_log*1/52)-sig*sqrt(1/52))
+p_52per <- (exp(r_log*1/52)-d_52per)/(u_52per-d_52per)
 ```
 
 Comme les données fournies avec l'énoncé sont mensuelles, on a que $h = 1/12$. La valeur finale de $\hat{\sigma}$ est `r round(sig*100, 2)`%.
