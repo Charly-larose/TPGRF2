@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.2.2)  4 APR 2025 23:17
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.2.2)  7 APR 2025 11:14
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -569,15 +569,13 @@ been already used, duplicate ignored
 l.144 \clearpage
                  [1
 
-] [2
-
 ]
 LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 1
 84.
 (c:/texlive/2022/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-<RapportGRF_equipe9_files/figure-latex/code_arbre_put95-1.pdf, id=43, 469.755pt
+<RapportGRF_equipe9_files/figure-latex/code_arbre_put95-1.pdf, id=35, 469.755pt
  x 578.16pt>
 File: RapportGRF_equipe9_files/figure-latex/code_arbre_put95-1.pdf Graphic file
  (type pdf)
@@ -590,8 +588,10 @@ Underfull \hbox (badness 10000) in paragraph at lines 191--196
 [][]
  []
 
-[3] [4 <./RapportGRF_equipe9_files/figure-latex/code_arbre_put95-1.pdf>]
-<RapportGRF_equipe9_files/figure-latex/code_arbre_call110-1.pdf, id=61, 469.755
+[2
+
+] [3 <./RapportGRF_equipe9_files/figure-latex/code_arbre_put95-1.pdf>]
+<RapportGRF_equipe9_files/figure-latex/code_arbre_call110-1.pdf, id=57, 469.755
 pt x 578.16pt>
 File: RapportGRF_equipe9_files/figure-latex/code_arbre_call110-1.pdf Graphic fi
 le (type pdf)
@@ -599,53 +599,62 @@ le (type pdf)
 Package pdftex.def Info: RapportGRF_equipe9_files/figure-latex/code_arbre_call1
 10-1.pdf  used on input line 202.
 (pdftex.def)             Requested size: 469.75386pt x 578.15858pt.
-[5 <./RapportGRF_equipe9_files/figure-latex/code_arbre_call110-1.pdf>] [6]
-<RapportGRF_equipe9_files/figure-latex/graphique achat 52 periodes-1.pdf, id=77
+[4 <./RapportGRF_equipe9_files/figure-latex/code_arbre_call110-1.pdf>] [5]
+<RapportGRF_equipe9_files/figure-latex/graphique achat 52 periodes-1.pdf, id=72
 , 650.43pt x 361.35pt>
 File: RapportGRF_equipe9_files/figure-latex/graphique achat 52 periodes-1.pdf G
 raphic file (type pdf)
 <use RapportGRF_equipe9_files/figure-latex/graphique achat 52 periodes-1.pdf>
 Package pdftex.def Info: RapportGRF_equipe9_files/figure-latex/graphique achat 
-52 periodes-1.pdf  used on input line 229.
+52 periodes-1.pdf  used on input line 227.
 (pdftex.def)             Requested size: 469.76817pt x 260.98232pt.
-[7 <./RapportGRF_equipe9_files/figure-latex/graphique achat 52 periodes-1.pdf>]
-<RapportGRF_equipe9_files/figure-latex/graphique vente 52 periodes-1.pdf, id=88
+[6 <./RapportGRF_equipe9_files/figure-latex/graphique achat 52 periodes-1.pdf>]
+<RapportGRF_equipe9_files/figure-latex/graphique vente 52 periodes-1.pdf, id=84
 , 650.43pt x 361.35pt>
 File: RapportGRF_equipe9_files/figure-latex/graphique vente 52 periodes-1.pdf G
 raphic file (type pdf)
 <use RapportGRF_equipe9_files/figure-latex/graphique vente 52 periodes-1.pdf>
 Package pdftex.def Info: RapportGRF_equipe9_files/figure-latex/graphique vente 
-52 periodes-1.pdf  used on input line 250.
+52 periodes-1.pdf  used on input line 252.
 (pdftex.def)             Requested size: 469.76817pt x 260.98232pt.
-[8 <./RapportGRF_equipe9_files/figure-latex/graphique vente 52 periodes-1.pdf>]
-(./RapportGRF_equipe9.aux) ) 
+[7 <./RapportGRF_equipe9_files/figure-latex/graphique vente 52 periodes-1.pdf>]
+<RapportGRF_equipe9_files/figure-latex/code arbre put americain-1.pdf, id=94, 4
+69.755pt x 578.16pt>
+File: RapportGRF_equipe9_files/figure-latex/code arbre put americain-1.pdf Grap
+hic file (type pdf)
+<use RapportGRF_equipe9_files/figure-latex/code arbre put americain-1.pdf>
+Package pdftex.def Info: RapportGRF_equipe9_files/figure-latex/code arbre put a
+mericain-1.pdf  used on input line 275.
+(pdftex.def)             Requested size: 469.75386pt x 578.15858pt.
+[8 <./RapportGRF_equipe9_files/figure-latex/code arbre put americain-1.pdf>] [9
+] (./RapportGRF_equipe9.aux) ) 
 Here is how much of TeX's memory you used:
- 15014 strings out of 476065
- 244032 string characters out of 5795021
- 1855299 words of memory out of 5000000
- 35084 multiletter control sequences out of 15000+600000
- 576615 words of font info for 110 fonts, out of 8000000 for 9000
+ 15030 strings out of 476065
+ 244630 string characters out of 5795021
+ 1856299 words of memory out of 5000000
+ 35090 multiletter control sequences out of 15000+600000
+ 576947 words of font info for 114 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 77i,11n,81p,1015b,510s stack positions out of 10000i,1000n,20000p,200000b,200000s
-{c:/texlive/2022/texmf-dist/fonts/enc/dvips/lm/lm-e
-c.enc}{c:/texlive/2022/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{c:/texlive/
-2022/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{c:/texlive/2022/texmf-dist/fonts/
-enc/dvips/lm/lm-mathit.enc}<c:/texlive/2022/texmf-dist/fonts/type1/public/lm/lm
-bx10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/texli
-ve/2022/texmf-dist/fonts/type1/public/lm/lmcsc10.pfb><c:/texlive/2022/texmf-dis
-t/fonts/type1/public/lm/lmmi10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/publ
-ic/lm/lmmi7.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:
-/texlive/2022/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/texlive/2022/texmf
--dist/fonts/type1/public/lm/lmr7.pfb><c:/texlive/2022/texmf-dist/fonts/type1/pu
-blic/lm/lmri10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/lm/lmri12.pfb
-><c:/texlive/2022/texmf-dist/fonts/type1/public/lm/lmro10.pfb><c:/texlive/2022/
-texmf-dist/fonts/type1/public/lm/lmsy10.pfb><c:/texlive/2022/texmf-dist/fonts/t
-ype1/public/lm/lmsy7.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/lm/lmtt
-10.pfb>
-Output written on RapportGRF_equipe9.pdf (9 pages, 295129 bytes).
+ 77i,12n,81p,1015b,510s stack positions out of 10000i,1000n,20000p,200000b,200000s
+{c:/texlive/2022/texmf-dist/fonts/enc/dvips/lm/lm
+-ec.enc}{c:/texlive/2022/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{c:/texliv
+e/2022/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{c:/texlive/2022/texmf-dist/font
+s/enc/dvips/lm/lm-mathit.enc}<c:/texlive/2022/texmf-dist/fonts/type1/public/lm/
+lmbx10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/tex
+live/2022/texmf-dist/fonts/type1/public/lm/lmcsc10.pfb><c:/texlive/2022/texmf-d
+ist/fonts/type1/public/lm/lmmi10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/pu
+blic/lm/lmmi7.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/lm/lmr10.pfb><
+c:/texlive/2022/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/texlive/2022/tex
+mf-dist/fonts/type1/public/lm/lmr7.pfb><c:/texlive/2022/texmf-dist/fonts/type1/
+public/lm/lmri10.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/lm/lmri12.p
+fb><c:/texlive/2022/texmf-dist/fonts/type1/public/lm/lmro10.pfb><c:/texlive/202
+2/texmf-dist/fonts/type1/public/lm/lmsy10.pfb><c:/texlive/2022/texmf-dist/fonts
+/type1/public/lm/lmsy7.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/lm/lm
+tt10.pfb>
+Output written on RapportGRF_equipe9.pdf (10 pages, 304378 bytes).
 PDF statistics:
- 191 PDF objects out of 1000 (max. 8388607)
- 141 compressed objects within 2 object streams
- 18 named destinations out of 1000 (max. 500000)
- 36941 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 203 PDF objects out of 1000 (max. 8388607)
+ 150 compressed objects within 2 object streams
+ 19 named destinations out of 1000 (max. 500000)
+ 36946 words of extra memory for PDF output out of 42996 (max. 10000000)
 

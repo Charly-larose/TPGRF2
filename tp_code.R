@@ -156,8 +156,8 @@ r_log <- log(1+r) # transformation pour avoir un r composé continuellement
 arbre(s = 100, k = 95, v = sig, r = r_log, tt = 1, d = 0, nstep = 4, american = FALSE,
       putopt = TRUE, plotvalues = TRUE, plotarrows = TRUE, returnprice = TRUE,
       drawstrike = TRUE)
-## option d'achat américaine k = 110, prix initial de l'indice = 100
-arbre(s = 100, k = 110, v = sig, r = r_log, tt = 1, d = 0, nstep = 4, american = TRUE,
+## option d'achat européenne k = 110, prix initial de l'indice = 100
+arbre(s = 100, k = 110, v = sig, r = r_log, tt = 1, d = 0, nstep = 4, american = FALSE,
       putopt = FALSE, plotvalues = TRUE, plotarrows = TRUE, returnprice = TRUE,
       drawstrike = TRUE)
 
@@ -165,8 +165,8 @@ arbre(s = 100, k = 110, v = sig, r = r_log, tt = 1, d = 0, nstep = 4, american =
 ## option de vente européenne, k = 95, prix initial de l'indice = 100
 binomopt(s = 100, k = 95, v = sig, r = r_log, tt = 1, d = 0, nstep = 52, american = F,
          putopt = T)
-## option d'achat américaine k = 110, prix initial de l'indice = 100
-binomopt(s = 100, k = 110, v = sig, r = r_log, tt = 1, d = 0, nstep = 52, american = T,
+## option d'achat européenne k = 110, prix initial de l'indice = 100
+binomopt(s = 100, k = 110, v = sig, r = r_log, tt = 1, d = 0, nstep = 52, american = F,
          putopt = F)
 
 
@@ -182,7 +182,7 @@ arithavgpricecv(s = 100, k = 110, v = sig, r = r, t =1, d = 0, m = )
 # Aucune idée comment faire, faudrait voir les notes
 
 
-### Question 3 ###
+#### Question 3 ####
 ## graphique pour illustrer la relation entre le prix d'exercice et le prix à
 ## payer pour les options d'achat et ventes européenne 
 
@@ -222,7 +222,12 @@ graph_put <- ggplot(data_graph, aes(x = prix_exercice, y = prix_put)) + geom_lin
     )
 
 
+#### Question 4 ####
+## Arbre 4 périodes avec une option de vente américaine 
 
+k <- 95
+r_log <- log(1+r) 
 
-
-
+arbre(s = 100, k = 110, v = sig, r = r_log, tt = 1, d = 0, nstep = 4, american = TRUE,
+      putopt = TRUE, plotvalues = TRUE, plotarrows = TRUE, returnprice = TRUE,
+      drawstrike = TRUE)
