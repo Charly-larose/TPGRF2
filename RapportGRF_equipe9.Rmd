@@ -243,20 +243,16 @@ call110_52p = binomopt(s = 100, k = 110, v = sig, r = r_log, tt = 1, d = 0, nste
 Le prix pour l'option de vente européenne avec un prix d'exercice de 95\$, mais avec 52 périodes, est de `r round(put95_52p, 4)`\$. Le prix de l'option d'achat européenne avec prix d'exercice de 110\$ est `r round(call110_52p, 4)`\$.
 
 ```{r opt_asia, echo = FALSE, eval = TRUE}
-call_asia <- AsianOption(type = "call",averageType = "arithmetic",
-                          underlying = 100,strike = 110, dividendYield = 0,
-                          riskFreeRate = r_log, maturity = 1,
-                          volatility = sig, steps = 52)
+
+call_asia <- AsianOption("arithmetic", "call", 100, 110, 0,
+                                r_log, 1, sig,
+                                   0, 1, 52)
 
 
-put_asia <- BarrierOption(type = "put",
-                             barrierType = "upout", barrier = 105,
-                             underlying = 100, strike = 95,
-                             dividendYield = 0, riskFreeRate = r_log,
-                             maturity = 1, volatility = sig)
+put_asia <-BarrierOption("upout", "put", 100, 95, 0, r_log, 1, sig, 105)
 ```
 
-Les prix des options asiatiques ont été trouvés à l'aide de la fonction `AsianOption` du paquetage `RQuantLib`. Le prix de l'option d'achat arithmétique avec un prix d'exercice de 110\$ est `r round(call_asia, 2)`\$. Le pris de l'option de vente à barrière désactivante de 105\$ est `r round(put_asia, 2)`\$. Le prix d'exercice est 95\$ pour cette option.
+Les prix des options asiatiques ont été trouvés à l'aide de la fonction `AsianOption` du paquetage `RQuantLib`. Le prix de l'option d'achat arithmétique avec un prix d'exercice de 110\$ est `r round(call_asia$value, 2)`\$. Le pris de l'option de vente à barrière désactivante de 105\$ est `r round(put_asia$value, 2)`\$. Le prix d'exercice est 95\$ pour cette option.
 
 \newpage
 # 3.Relation du prix de l'option et du prix d'exercice  
