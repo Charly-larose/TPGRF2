@@ -20,7 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r paquetages, message=FALSE, eval=TRUE, include=FALSE, echo = FALSE}
 ### Liste des paquetages
-liste <-c("magrittr", "derivmkts", "httr","ggplot2")
+liste <-c("magrittr", "derivmkts", "httr","ggplot2", "RQuantLib")
 
 installation <- liste %in% installed.packages()
 if(length(liste[!installation]) > 0) {
@@ -89,17 +89,7 @@ $$
 $$
 p=\frac{e^{rh}-d}{u-d}.
 $$
-Pour construire les arbres binomiaux, les valeurs de $u$, $d$ et $p$ sont nécessaires. Les formules suivantes permettent d'obtenir ces valeurs
 
-$$
-u = e^{(r-\delta)h+\sigma\sqrt{h}},
-$$
-$$
-d = e^{(r-\delta)h-\sigma\sqrt{h}},
-$$
-$$
-p=\frac{e^{rh}-d}{u-d}.
-$$
 Comme l'énoncé mentionne une absence de dividende, on suppose que $\delta = 0$.
 
 Pour l'arbre binomial à 4 périodes, on obtient que $u =$ `r round(u_quatreper, 2)`, $d =$ `r round(d_quatreper, 2)` et $p =$ `r round(p_quatreper*100, 2)`%.
@@ -215,6 +205,10 @@ arbre(s = 100, k = 95, v = sig, r = r, tt = 1, d = 0, nstep = 4, american = FALS
       drawstrike = FALSE)
 
 ```
+\begin{center}
+\textsf{Figure 1 : Arbre binomial de l'option de vente européenne à 4 périodes}
+\end{center}
+
 On relève que l'option de vente européenne est levée pour seulement deux prix du sous-jacent. Les points sont en vert. Les informations pertinentes à l'arbre binomial sont soulevées directement sur la figure ci-dessus.
 
 \newpage
@@ -227,6 +221,9 @@ arbre(s = 100, k = 110, v = sig, r = r_log, tt = 1, d = 0, nstep = 4, american =
       drawstrike = FALSE)
 
 ```
+\begin{center}
+\textsf{Figure 2 : Arbre binomial de l'option d'achat européenne à 52 périodes}
+\end{center}
 
 On observe que l'option de d'achat européenne est levée pour seulement deux prix du sous-jacent. Les points où que l'option est levée sont en vert. Les informations pertinentes à l'arbre binomial sont soulevées directement sur le graphe ci-dessus.
 \newpage
@@ -245,11 +242,27 @@ call110_52p = binomopt(s = 100, k = 110, v = sig, r = r_log, tt = 1, d = 0, nste
 
 Le prix pour l'option de vente européenne avec un prix d'exercice de 95\$, mais avec 52 périodes, est de `r round(put95_52p, 4)`\$. Le prix de l'option d'achat européenne avec prix d'exercice de 110\$ est `r round(call110_52p, 4)`\$.
 
+```{r opt_asia, echo = FALSE, eval = TRUE}
+call_asia <- AsianOption(type = "call",averageType = "arithmetic",
+                          underlying = 100,strike = 110, dividendYield = 0,
+                          riskFreeRate = r_log, maturity = 1,
+                          volatility = sig, steps = 52)
+
+
+put_asia <- BarrierOption(type = "put",
+                             barrierType = "upout", barrier = 105,
+                             underlying = 100, strike = 95,
+                             dividendYield = 0, riskFreeRate = r_log,
+                             maturity = 1, volatility = sig)
+```
+
+Les prix des options asiatiques ont été trouvés à l'aide de la fonction `AsianOption` du paquetage `RQuantLib`. Le prix de l'option d'achat arithmétique avec un prix d'exercice de 110\$ est `r round(call_asia, 2)`\$. Le pris de l'option de vente à barrière désactivante de 105\$ est `r round(put_asia, 2)`\$. Le prix d'exercice est 95\$ pour cette option.
+
 \newpage
 # 3.Relation du prix de l'option et du prix d'exercice  
 ## Option d'achat  
 On constate la relation du prix à payer pour l'option d'achat européenne présentée
-à la section 2, celle avec le modèle 52 périodes, grâce à la **figure x**.  
+à la section 2, celle avec le modèle 52 périodes, grâce à la Figure 3 ci-dessous.  
 
 ```{r graphique achat 52 periodes, echo = FALSE, include = TRUE, fig.cap= "Graphique du prix d'une option d'achat européenne en fonction du prix d'exercice", fig.width=9, fig.height=5,results='hide'}
 k <- seq(from = 50, to = 250, by = 5)
@@ -280,8 +293,11 @@ graph_call <- ggplot(data_graph, aes(x = prix_exercice, y = prix_call)) +
 graph_call
 
 ```
+\begin{center}
+\textsf{Figure 3 : Coût de l'option d'achat en fonction du prix d'exercice}
+\end{center}
 
-La figure X illustre une relation inversement proportionnelle entre le prix à payer 
+La Figure 3 illustre une relation inversement proportionnelle entre le prix à payer 
 pour l’option d’achat et le prix d’exercice. Ce comportement est attendu : plus 
 le prix d’exercice est faible, plus le prix à payer pour l’option sera élevé, car
 il est plus avantageux d’acheter l’actif sous-jacent à un prix inférieur que sa valeur 
@@ -293,7 +309,7 @@ d’acheter l’actif sous-jacent à un prix supérieur que sa valeur actuelle.
 \newpage
 ## Option de vente  
 On constate la relation du prix à payer pour l'option de vente européenne présentée
-à la section 2, celle avec le modèle 52 périodes, grâce à la **figure x**.  
+à la section 2, celle avec le modèle 52 périodes, grâce à la Figure 4 ci-dessous.  
 
 ```{r graphique vente 52 periodes, echo = FALSE, include = TRUE, fig.cap= "Graphique du prix d'une option de vente européenne en fonction du prix d'exercice", fig.width=9, fig.height=5,results='hide'}
 k <- seq(from = 0, to = 200, by = 5)
@@ -324,11 +340,15 @@ graph_put <- ggplot(data_graph, aes(x = prix_exercice, y = prix_put)) +
 graph_put
 
 ```
-La figure illustre une relation directement proportionnelle entre le prix à payer 
+\begin{center}
+\textsf{Figure 4 : Coût de l'option de vente en fonction du prix d'exercice}
+\end{center}
+
+La Figure 4 illustre une relation directement proportionnelle entre le prix à payer 
 pour l'option de vente et le prix d'exercice. Ce comportement est attendu : plus 
-le prix d'exercice est élevé, plus il y a de chances que l'option soit exercée. 
-En effet, il est plus avantageux de vendre l'actif a un prix supérieur que sa valeur
-actuelle, il y a donc plus de chances que l'option de vente soit exercée lorsque le prix 
+le prix d'exercice est élevé, plus il y a de chance que l'option soit exercée. 
+En effet, il est plus avantageux de vendre l'actif à un prix supérieur que sa valeur
+actuelle, il y a donc plus de chance que l'option de vente soit exercée lorsque le prix 
 d'exercice augmente.  
 À l'inverse, il est moins avantageux de vendre l'actif à un prix inférieur que sa 
 valeur actuelle. Donc, lorsque le prix d'exercice diminue, le prix de l'option 
@@ -337,7 +357,7 @@ diminue, car il y a moins de chance qu'elle soit exercée.
 \newpage
 # 4. Arbre bionimal option vente américaine  
 
-Avec les mêmes fonctions utilisées pour construire les arbres binomiaux présentés à la section 2, un arbre binomial 4 périodes pour une option de vente américaine a été construit. La figure ci-dessou présente les détails de l'arbre :
+Avec les mêmes fonctions utilisées pour construire les arbres binomiaux présentés à la section 2, un arbre binomial 4 périodes pour une option de vente américaine a été construit. La figure ci-dessous présente les détails de l'arbre :
 
 ```{r code arbre put americain, echo = FALSE, include = TRUE, fig.height=8, results='hide'}
 
@@ -347,13 +367,16 @@ arbre(s = 100, k = 95, v = sig, r = r_log, tt = 1, d = 0, nstep = 4, american = 
       putopt = TRUE, plotvalues = TRUE, plotarrows = TRUE, returnprice = TRUE,
       drawstrike = FALSE)
 ```
+\begin{center}
+\textsf{Figure 5 : Arbre binomial de l'option d'achat américaine à 4 périodes}
+\end{center}
 
-Les paramétres de l'arbre sont les suivants :  
+Les paramètres de l'arbre sont les suivants :  
 
-Une première différence entre l'option de vente américaine et l'option de vente européenne (présentée à la section 2) est leur prix d'achat. L'option de vente américain a un prix d'achat plus élevée que l'option de vente européenne, soit **afficher les valeurs**. Ceci est du au fait qu'il y a plus de chances que l'option de vente américaine soit levée en raison de la possibilité d'exercer l'option avant l'échéance. Cette différence est refletée dans chacun des noeuds. En effet, comme les prix des options sont différents à chacun des noueds, les portefeuilles réplicatifs sont aussi différents.  
+Une première différence entre l'option de vente américaine et l'option de vente européenne (présentée à la section 2) est leur prix d'achat. L'option de vente américaine a un prix d'achat plus élevée que l'option de vente européenne, soit **afficher les valeurs**. Ceci est dû au fait qu'il y a plus de chance que l'option de vente américaine soit levée en raison de la possibilité d'exercer l'option avant l'échéance. Cette différence est refletée dans chacun des noeuds. En effet, comme les prix des options sont différents à chacun des noueds, les portefeuilles réplicatifs sont aussi différents.  
 
-Ceci introduit la deuxième différence, soit le nombre de possibilités où les options sont levées. En effet, l'option de vente américaine est levée hâtivemen à $0,8$ année. Il y a donc une seule option d'exercice hâtif. Cependant, à l'échéance, les deux options sont exercées pour les mêmes valeurs, soient $80,9$ et $64$.  
+Cela introduit la deuxième différence, soit le nombre de possibilités où les options sont levées. En effet, l'option de vente américaine est levée hâtivemetn à $0,8$ année. Il y a donc une seule option d'exercice hâtif. Cependant, à l'échéance, les deux options sont exercées pour les mêmes valeurs, soient $80,9$ et $64$.  
 
-Une ressemblance entre les deux options est le haut du graphique. En effet, aucune des options n'est exercée pour les valeurs supérieures de l'actif, doncil n'y a aucun portefeuille réplicatif et aucune possibilité d'exercie hâtif, donc lorsque le sous-jacent augmente de valeur, aucune des options n'est exercées.  
+Une ressemblance entre les deux options est représentée sur le haut du graphique. En effet, aucune des options n'est exercée pour les valeurs supérieures de l'actif, donc il n'y a aucun portefeuille réplicatif et aucune possibilité d'exercice hâtif. Ainsi, lorsque le sous-jacent augmente de valeur, aucune option n'est exercée.  
 
 
