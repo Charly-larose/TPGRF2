@@ -369,10 +369,65 @@ arbre(s = 100, k = 95, v = sig, r = r_log, tt = 1, d = 0, nstep = 4, american = 
 
 Les paramètres de l'arbre sont les suivants :  
 
-Une première différence entre l'option de vente américaine et l'option de vente européenne (présentée à la section 2) est leur prix d'achat. L'option de vente américaine a un prix d'achat plus élevée que l'option de vente européenne, soit **afficher les valeurs**. Ceci est dû au fait qu'il y a plus de chance que l'option de vente américaine soit levée en raison de la possibilité d'exercer l'option avant l'échéance. Cette différence est refletée dans chacun des noeuds. En effet, comme les prix des options sont différents à chacun des noueds, les portefeuilles réplicatifs sont aussi différents.  
+Une première différence entre l'option de vente américaine et l'option de vente européenne (présentée à la section 2) est leur prix d'achat. L'option de vente américaine a un prix d'achat plus élevée que l'option de vente européenne, soit **afficher les valeurs**. Ceci est dû au fait qu'il y a plus de chance que l'option de vente américaine soit levée en raison de la possibilité d'exercer l'option avant l'échéance. Cette différence est refletée dans chacun des noeuds. En effet, comme les prix des options sont différents à chacun des noeuds, les portefeuilles réplicatifs sont aussi différents.  
 
-Cela introduit la deuxième différence, soit le nombre de possibilités où les options sont levées. En effet, l'option de vente américaine est levée hâtivemetn à $0,8$ année. Il y a donc une seule option d'exercice hâtif. Cependant, à l'échéance, les deux options sont exercées pour les mêmes valeurs, soient $80,9$ et $64$.  
+Cela introduit la deuxième différence, soit le nombre de possibilités où les options sont levées. En effet, l'option de vente américaine est levée hâtivement à $0,8$ année. Il y a donc une seule option d'exercice hâtif. Cependant, à l'échéance, les deux options sont exercées pour les mêmes valeurs, soient $80,9$ et $64$.  
 
 Une ressemblance entre les deux options est représentée sur le haut du graphique. En effet, aucune des options n'est exercée pour les valeurs supérieures de l'actif, donc il n'y a aucun portefeuille réplicatif et aucune possibilité d'exercice hâtif. Ainsi, lorsque le sous-jacent augmente de valeur, aucune option n'est exercée.  
 
 
+# 5. Modèle de Black-Scholes
+
+La présente section a pour but de montrer les prix des options européennes du numéro 2 mais sous l'équation du modèle de Black-Scholes.
+
+## Option d'achat
+
+L'option d'achat du modèle de Black-Scholes se définit de la façon suivante
+
+$$
+C(S,K,\sigma,r,T,\delta) = Se^{-\delta T}N(d_{1}) - Ke^{-rT}N(d_{2}),
+$$
+Les valeurs de $d_1$ et $d_2$ sont
+$$
+d_{1} = \frac{ln(\frac{S}{K}) + (r - \delta  + \frac{\sigma^{2}}{2})T}{\sigma\sqrt{T}}
+$$
+et
+$$
+d_{2} = d_{1} - \sigma\sqrt{T}.
+$$
+```{r mod_BS, echo = FALSE, include = TRUE, fig.height=8, results='hide'}
+
+call_BS <- function(s, k, sig, r_log, t, div)
+{
+  d1 <- (log(s/k) + (r_log - div + sig^2/2)*t)/(sig*sqrt(t))
+  d2 <- d1 - sig*sqrt(t)
+  s*exp(-div*t)*pnorm(d1) - k*exp(-r_log*t)*pnorm(d2)
+}
+
+call_BS110 <- call_BS(100, 110, sig, r_log, 1, 0)
+
+```
+
+Ainsi, la valeur de l'option d'achat $C(100,110,0.2338,0.02137, 1, 0) =$`r round(call_BS110, 2)`\$.
+
+## Option de vente
+L'option de vente du modèle de Black-Scholes se définit de la façon suivante
+
+$$
+P(S,K,\sigma,r,T,\delta) = Ke^{-r T}N(-d_{2}) - Se^{-\delta T}N(-d_{1}),
+$$
+Les valeurs de $d_1$ et $d_2$ sont définies de la même façon que pour l'option d'achat.
+
+```{r mod_BS_put, echo = FALSE, include = TRUE, fig.height=8, results='hide'}
+
+put_BS <- function(s, k, sig, r_log, t, div)
+{
+  d1 <- (log(s/k) + (r_log - div + sig^2/2)*t)/(sig*sqrt(t))
+  d2 <- d1 - sig*sqrt(t)
+  k*exp(-r_log*t)*pnorm(-d2) - s*exp(-div*t)*pnorm(-d1)
+}
+
+put_BS95 <- put_BS(100, 95, sig, r_log, 1, 0)
+
+```
+Ainsi, la valeur de l'option de vente $C(100, 95,0.2338,0.02137, 1, 0) =$`r round(put_BS95, 2)`\$.

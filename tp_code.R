@@ -161,7 +161,7 @@ arbre(s = 100, k = 110, v = sig, r = r_log, tt = 1, d = 0, nstep = 4, american =
       putopt = FALSE, plotvalues = TRUE, plotarrows = TRUE, returnprice = TRUE,
       drawstrike = TRUE)
 
-### modèle à 52 périodes, seulement calculer les prix 
+### modèle à 52 périodes, seulement calculer les prix
 ## option de vente européenne, k = 95, prix initial de l'indice = 100
 binomopt(s = 100, k = 95, v = sig, r = r_log, tt = 1, d = 0, nstep = 52, american = F,
          putopt = T)
@@ -184,9 +184,9 @@ arithavgpricecv(s = 100, k = 110, v = sig, r = r, t =1, d = 0, m = )
 
 #### Question 3 ####
 ## graphique pour illustrer la relation entre le prix d'exercice et le prix à
-## payer pour les options d'achat et ventes européenne 
+## payer pour les options d'achat et ventes européenne
 
-## CALL 
+## CALL
 k <- seq(from = 50, to = 250, by = 5)
 prix_achat <- sapply(k, function(k) binomopt(s = 100, k = k, v = sig, r = r_log, tt = 1, d = 0, nstep = 52, american = F,
                                         putopt = F, returntrees = T)$price)
@@ -223,11 +223,34 @@ graph_put <- ggplot(data_graph, aes(x = prix_exercice, y = prix_put)) + geom_lin
 
 
 #### Question 4 ####
-## Arbre 4 périodes avec une option de vente américaine 
+## Arbre 4 périodes avec une option de vente américaine
 
 k <- 95
-r_log <- log(1+r) 
+r_log <- log(1+r)
 
 arbre(s = 100, k = 110, v = sig, r = r_log, tt = 1, d = 0, nstep = 4, american = TRUE,
       putopt = TRUE, plotvalues = TRUE, plotarrows = TRUE, returnprice = TRUE,
       drawstrike = TRUE)
+
+
+#### Question 5 ####
+# Option d'achat
+call_BS <- function(s, k, sig, r_log, t, div)
+{
+    d1 <- (log(s/k) + (r_log - div + sig^2/2)*t)/(sig*sqrt(t))
+    d2 <- d1 - sig*sqrt(t)
+    s*exp(-div*t)*pnorm(d1) - k*exp(-r_log*t)*pnorm(d2)
+}
+
+call_BS110 <- call_BS(100, 110, sig, r_log, 1, 0)
+
+# Option vente
+put_BS <- function(s, k, sig, r_log, t, div)
+{
+    d1 <- (log(s/k) + (r_log - div + sig^2/2)*t)/(sig*sqrt(t))
+    d2 <- d1 - sig*sqrt(t)
+    k*exp(-r_log*t)*pnorm(-d2) - s*exp(-div*t)*pnorm(-d1)
+}
+
+put_BS95 <- put_BS(100, 95, sig, r_log, 1, 0)
+
