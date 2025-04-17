@@ -458,3 +458,6 @@ Des observations similaires peuvent être faites pour l’option de vente europ�
 Par ailleurs, la valeur obtenue avec l’arbre à 52 périodes tend à converger vers celle donnée par la formule de Black-Scholes, soit `r round(put_BS95, 4)`, ce qui confirme à nouveau la convergence lorsque le nombre de périodes est suffisamment élevé.
 
 ## Lien entre numéro 3 ???
+
+# Annexe
+mettre le code, une fois toute fini
