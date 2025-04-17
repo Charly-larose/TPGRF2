@@ -200,9 +200,12 @@ Les fonctions `binomplot` et  `binomopt` du paquetage `derivmkts` permettent de 
 L'évolution du prix du sous-jacent pour l'option de vente avec 4 périodes avec un prix d'exercice de 95$ est illustré ci-dessous.
 
 ```{r code_arbre_put95, echo = FALSE, include = TRUE, fig.height=8, results='hide'}
-arbre(s = 100, k = 95, v = sig, r = r, tt = 1, d = 0, nstep = 4, american = FALSE,
+arbre(s = 100, k = 95, v = sig, r = r_log, tt = 1, d = 0, nstep = 4, american = FALSE,
       putopt = TRUE, plotvalues = TRUE, plotarrows = TRUE, returnprice = TRUE,
       drawstrike = FALSE)
+
+put95_4p = binomopt(s = 100, k = 95, v = sig, r = r_log, tt = 1, d = 0, nstep = 4, american = F,
+         putopt = T)
 
 ```
 \begin{center}
@@ -220,6 +223,9 @@ arbre(s = 100, k = 110, v = sig, r = r_log, tt = 1, d = 0, nstep = 4, american =
       putopt = FALSE, plotvalues = TRUE, plotarrows = TRUE, returnprice = TRUE,
       drawstrike = FALSE)
 
+call110_4p = binomopt(s = 100, k = 110, v = sig, r = r_log, tt = 1, d = 0, nstep = 4, american = F,
+         putopt = F)
+
 ```
 \begin{center}
 \textsf{Figure 2 : Arbre binomial de l'option d'achat européenne à 52 périodes}
@@ -227,6 +233,7 @@ arbre(s = 100, k = 110, v = sig, r = r_log, tt = 1, d = 0, nstep = 4, american =
 
 On observe que l'option de d'achat européenne est levée pour seulement deux prix du sous-jacent. Les points où que l'option est levée sont en vert. Les informations pertinentes à l'arbre binomial sont soulevées directement sur le graphe ci-dessus.
 \newpage
+
 ## Arbres binomiaux à 52 périodes
 
 ```{r code52_prix, echo = FALSE, eval = TRUE}
@@ -297,8 +304,8 @@ La Figure 3 illustre une relation inversement proportionnelle entre le prix à p
 pour l’option d’achat et le prix d’exercice. Ce comportement est attendu : plus 
 le prix d’exercice est faible, plus le prix à payer pour l’option sera élevé, car
 il est plus avantageux d’acheter l’actif sous-jacent à un prix inférieur que sa valeur 
-actuelle.Donc, il a une augmentation des probabilités que l'option soit levée.  
-À l’inverse, un prix d’exercice élevé entrain une diminution du prix de
+actuelle. Donc, il a une augmentation des probabilités que l'option soit levée.  
+À l’inverse, un prix d’exercice élevé entraine une diminution du prix de
 l'option puisqu’il est moins probable qu’elle soit exercée, car il est moins avantageux 
 d’acheter l’actif sous-jacent à un prix supérieur que sa valeur actuelle.   
 
@@ -408,7 +415,7 @@ call_BS110 <- call_BS(100, 110, sig, r_log, 1, 0)
 
 ```
 
-Ainsi, la valeur de l'option d'achat $C(100,110,0.2338,0.02137, 1, 0) =$`r round(call_BS110, 2)`\$.
+Ainsi, la valeur de l'option d'achat $C(100,110,0.2338,0.02137, 1, 0)$ = `r round(call_BS110, 2)`.
 
 ## Option de vente
 L'option de vente du modèle de Black-Scholes se définit de la façon suivante
@@ -430,4 +437,24 @@ put_BS <- function(s, k, sig, r_log, t, div)
 put_BS95 <- put_BS(100, 95, sig, r_log, 1, 0)
 
 ```
-Ainsi, la valeur de l'option de vente $C(100, 95,0.2338,0.02137, 1, 0) =$`r round(put_BS95, 2)`\$.
+
+Ainsi, la valeur de l'option de vente $C(100, 95,0.2338,0.02137, 1, 0)$ = `r round(put_BS95, 2)`.
+
+## Comparaison entre le modèle d'arbre binomial et le modèle de Black-Scholes
+Le modèle de Black-Scholes se veut l'équivalent continu du modèle de l'arbre binomial. C'est-à-dire, il s'agit de l'équivalent d'un arbre binomial avec un nombre infini de périodes dans un intervalle de temps fini.
+
+Ainsi, à partir d'un certain nombre de périodes, le prix de l'option, obtenu avec l'arbre binomial, aura tendance à converger vers un prix qui est celui obtenu avec la formule de Black-Scholes. 
+
+Il est donc intéressant de comparer les valeurs des options européennes obtenues avec les arbres binomiales précedement avec ceux obtenus avec le modèle de Black-Shcoles. 
+
+Justement, il est possible de constater que la valeur de l'option d'achat européenne du modèle binomial à 4 périodes s'éloigne davantage de la valeur obtenue avec le modèle de Black-Scholes que celle obtenue avec l'arbre binomial à 52 périodes.
+
+En effet, la valeur obtenu avec l'arbre à 4 périodes est `r round(call110_4p, 4)` tandis que celle obtenue avec l'arbre à 52 périodes est `r round(call110_52p, 4)`. Cela s’explique par le fait qu’à mesure que le nombre de périodes augmente dans l’arbre binomial, le prix calculé de l’option tend à se rapprocher de celui obtenu avec le modèle de Black-Scholes.
+
+Il est possible de voir que la valeur obtenue avec l'arbre à 52 périodes converge vers la valeur obtenue avec le modèle de Black-Scholes, soit `r round(call_BS110, 4)`. Ce qui illustre bien la convergence mentionnée plus haut.
+
+Des observations similaires peuvent être faites pour l’option de vente européenne. En effet, on remarque que la valeur obtenue à l’aide du modèle binomial à 4 périodes s’éloigne davantage de celle fournie par le modèle de Black-Scholes, comparativement à celle obtenue avec l’arbre à 52 périodes. Plus précisément, la valeur de l’arbre à 4 périodes est de `r round(put95_4p, 4)`, tandis que celle calculée avec l'arbre à 52 périodes est de `r round(put95_52p, 4)`.
+
+Par ailleurs, la valeur obtenue avec l’arbre à 52 périodes tend à converger vers celle donnée par la formule de Black-Scholes, soit `r round(put_BS95, 4)`, ce qui confirme à nouveau la convergence lorsque le nombre de périodes est suffisamment élevé.
+
+## Lien entre numéro 3 ???
