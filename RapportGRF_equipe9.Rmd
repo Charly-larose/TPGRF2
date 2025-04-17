@@ -197,7 +197,7 @@ arbre <- function (s, k, v, r, tt, d, nstep, putopt = FALSE, american = TRUE,
 
 Les fonctions `binomplot` et  `binomopt` du paquetage `derivmkts` permettent de construire les arbres binomiaux demandés et d'en faire les graphes. 
 
-L'évolution du prix du sous-jacent pour l'option de vente avec 4 périodes avec un prix d'exercice de 95$ est illustré ci-dessous.
+L'évolution du prix du sous-jacent pour l'option de vente européenne avec 4 périodes et un prix d'exercice de 95$ est illustré ci-dessous.
 
 ```{r code_arbre_put95, echo = FALSE, include = TRUE, fig.height=8, results='hide'}
 arbre(s = 100, k = 95, v = sig, r = r_log, tt = 1, d = 0, nstep = 4, american = FALSE,
@@ -212,7 +212,7 @@ put95_4p = binomopt(s = 100, k = 95, v = sig, r = r_log, tt = 1, d = 0, nstep = 
 \textsf{Figure 1 : Arbre binomial de l'option de vente européenne à 4 périodes}
 \end{center}
 
-On relève que l'option de vente européenne est levée pour seulement deux prix du sous-jacent. Les points sont en vert. Les informations pertinentes à l'arbre binomial sont soulevées directement sur la figure ci-dessus.
+On relève que l'option de vente européenne est levée pour seulement deux prix du sous-jacent, soit les points verts de la Figure 1. Les informations pertinentes à l'arbre binomial sont soulevées directement sur la figure ci-dessus.
 
 \newpage
 L'évolution du prix du sous-jacent pour l'option d'achat européenne avec 4 périodes avec un prix d'exercice de 110$ est illustré ci-dessous.
@@ -247,7 +247,7 @@ call110_52p = binomopt(s = 100, k = 110, v = sig, r = r_log, tt = 1, d = 0, nste
 
 ```
 
-Le prix pour l'option de vente européenne avec un prix d'exercice de 95\$, mais avec 52 périodes, est de `r round(put95_52p, 4)`\$. Le prix de l'option d'achat européenne avec prix d'exercice de 110\$ est `r round(call110_52p, 4)`\$.
+Le prix pour l'option de vente européenne avec un prix d'exercice de 95\$, avec l'arbre de 52 périodes, est de `r round(put95_52p, 4)`\$.En utilisant encore une fois un arbre de 52 périodes, lse prix de l'option d'achat européenne avec prix d'exercice de 110\$ est `r round(call110_52p, 4)`\$.
 
 ```{r opt_asia, echo = FALSE, eval = TRUE}
 
@@ -259,7 +259,7 @@ call_asia <- AsianOption("arithmetic", "call", 100, 110, 0,
 put_asia <-BarrierOption("upout", "put", 100, 95, 0, r_log, 1, sig, 105)
 ```
 
-Les prix des options asiatiques ont été trouvés à l'aide de la fonction `AsianOption` du paquetage `RQuantLib`. Le prix de l'option d'achat arithmétique avec un prix d'exercice de 110\$ est `r round(call_asia$value, 2)`\$. Le pris de l'option de vente à barrière désactivante de 105\$ est `r round(put_asia$value, 2)`\$. Le prix d'exercice est 95\$ pour cette option.
+Les prix des options asiatiques ont été trouvés à l'aide de la fonction `AsianOption` du paquetage `RQuantLib`. Le prix de l'option d'achat arithmétique avec un prix d'exercice de 110\$ est `r round(call_asia$value, 2)`\$. Le prix de l'option de vente à barrière désactivante de 105\$ avec un prix d'exercice de 95\$ est `r round(put_asia$value, 2)`\$. 
 
 \newpage
 # 3.Relation du prix de l'option et du prix d'exercice  
@@ -304,7 +304,7 @@ La Figure 3 illustre une relation inversement proportionnelle entre le prix à p
 pour l’option d’achat et le prix d’exercice. Ce comportement est attendu : plus 
 le prix d’exercice est faible, plus le prix à payer pour l’option sera élevé, car
 il est plus avantageux d’acheter l’actif sous-jacent à un prix inférieur que sa valeur 
-actuelle. Donc, il a une augmentation des probabilités que l'option soit levée.  
+actuelle. Donc, plus le prix du sous-jacent diminue, plus il y a une augmentation des probabilités que l'option soit levée.  
 À l’inverse, un prix d’exercice élevé entraine une diminution du prix de
 l'option puisqu’il est moins probable qu’elle soit exercée, car il est moins avantageux 
 d’acheter l’actif sous-jacent à un prix supérieur que sa valeur actuelle.   
@@ -376,17 +376,16 @@ arbre(s = 100, k = 95, v = sig, r = r_log, tt = 1, d = 0, nstep = 4, american = 
 
 Les paramètres de l'arbre sont les suivants :  
 
-Une première différence entre l'option de vente américaine et l'option de vente européenne (présentée à la section 2) est leur prix d'achat. L'option de vente américaine a un prix d'achat plus élevée que l'option de vente européenne, soit **afficher les valeurs**. Ceci est dû au fait qu'il y a plus de chance que l'option de vente américaine soit levée en raison de la possibilité d'exercer l'option avant l'échéance. Cette différence est refletée dans chacun des noeuds. En effet, comme les prix des options sont différents à chacun des noeuds, les portefeuilles réplicatifs sont aussi différents.  
+Une première différence entre l'option de vente américaine et l'option de vente européenne (présentée à la section 2) est leur prix d'achat. L'option de vente américaine a un prix d'achat plus élevée que l'option de vente européenne. Le prix de l'option européenne est de $6,24$ alors que celui de l'option américaine est $6,31$.  Ceci est dû au fait qu'il y a plus de chance que l'option de vente américaine soit levée en raison de la possibilité d'exercer l'option avant l'échéance. Cette différence est refletée dans chacun des noeuds. En effet, comme les prix des options sont différents à chacun des noeuds, les portefeuilles réplicatifs sont aussi différents.  
 
-Cela introduit la deuxième différence, soit le nombre de possibilités où les options sont levées. En effet, l'option de vente américaine est levée hâtivement à $0,8$ année. Il y a donc une seule option d'exercice hâtif. Cependant, à l'échéance, les deux options sont exercées pour les mêmes valeurs, soient $80,9$ et $64$.  
+Cela introduit la deuxième différence, soit la possibilitée que les options américaines soient levées avant l'exercice. Comme il est possible de constater sur la Figure 5 l'option de vente américaine est levée hâtivement à $0,8$ année, tandis que l'option de vente européenne ne peut qu'être levé qu'à l'échéance. Cependant, une similitude est que les deux options sont levées à l'échéance aux mêmes prix du sous-jacent. C'est-à-dire que comme le prix d'exercice est le même pour les deux options, leur exercice à l'échéance est le même.  
 
-Une ressemblance entre les deux options est représentée sur le haut du graphique. En effet, aucune des options n'est exercée pour les valeurs supérieures de l'actif, donc il n'y a aucun portefeuille réplicatif et aucune possibilité d'exercice hâtif. Ainsi, lorsque le sous-jacent augmente de valeur, aucune option n'est exercée.  
+Une ressemblance entre les deux options est représentée sur le haut du graphique. En effet, aucune des options n'est exercée pour les valeurs supérieures de l'actif, donc il n'y a aucun portefeuille réplicatif et aucune possibilité d'exercice hâtif. Ainsi, lorsque le sous-jacent augmente de valeur, aucune option n'est exercée.  Ceci est expliqué par le fait que les paramètres pour les deux options soient les mêmes. 
 
 
 # 5. Modèle de Black-Scholes
 
-La présente section a pour but de montrer les prix des options européennes du numéro 2 mais sous l'équation du modèle de Black-Scholes.
-
+La présente section a pour but de montrer les prix des options européennes du numéro 2 mais sous l'équation du modèle de Black-Scholes. 
 ## Option d'achat
 
 L'option d'achat du modèle de Black-Scholes se définit de la façon suivante
@@ -457,7 +456,94 @@ Des observations similaires peuvent être faites pour l’option de vente europ�
 
 Par ailleurs, la valeur obtenue avec l’arbre à 52 périodes tend à converger vers celle donnée par la formule de Black-Scholes, soit `r round(put_BS95, 4)`, ce qui confirme à nouveau la convergence lorsque le nombre de périodes est suffisamment élevé.
 
-## Lien entre numéro 3 ???
+## Lien entre numéro 3  
+
+```{r comparaison call}
+# Votre fonction Black–Scholes
+call_BS <- function(s, k, sig, r_log, t, div) {
+  d1 <- (log(s/k) + (r_log - div + sig^2/2)*t) / (sig*sqrt(t))
+  d2 <- d1 - sig*sqrt(t)
+  s * exp(-div*t) * pnorm(d1) - k * exp(-r_log*t) * pnorm(d2)
+}
+
+# 1. Définir les paramètres du marché
+s     <- 100    # cours actuel de l'actif
+sig   <- 0.2    # volatilité
+r_log <- 0.05   # taux sans risque continu
+t     <- 1      # maturité en années
+div   <- 0.02   # rendement du dividende (continu)
+
+# 2. Générer une séquence de prix d'exercice
+k_values <- seq(50, 150, by = 1)
+
+# 3. Calculer le prix de l'option pour chaque K
+call_prices <- call_BS(s, k_values, sig, r_log, t, div)
+
+# 4. Mettre en forme en data.frame
+df <- data.frame(
+  K     = k_values,
+  Price = call_prices
+)
+
+# 5. Tracer avec ggplot2
+library(ggplot2)
+
+ggplot(df, aes(x = K, y = Price)) +
+  geom_line(size = 1) +
+  labs(
+    title = "Prix de l'option d'achat Black–Scholes en fonction du strike",
+    x     = "Prix d'exercice (K)",
+    y     = "Prix de l'option (Call)"
+  ) +
+  theme_minimal()
+
+```
+
+```{r comparaison put}
+# Fonction Black–Scholes pour le put
+put_BS <- function(s, k, sig, r_log, t, div) {
+  d1 <- (log(s/k) + (r_log - div + sig^2/2)*t) / (sig*sqrt(t))
+  d2 <- d1 - sig*sqrt(t)
+  k * exp(-r_log*t) * pnorm(-d2) - s * exp(-div*t) * pnorm(-d1)
+}
+
+# 1. Paramètres du marché (à ajuster si besoin)
+s     <- 100    # cours actuel de l'actif
+sig   <- 0.2    # volatilité
+r_log <- 0.05   # taux sans risque continu
+t     <- 1      # maturité en années
+div   <- 0.02   # rendement du dividende (continu)
+
+# 2. Grille de prix d'exercice
+k_values <- seq(50, 150, by = 1)
+
+# 3. Calcul des prix de l'option de vente
+put_prices <- put_BS(s, k_values, sig, r_log, t, div)
+
+# 4. Préparation du data.frame
+df_put <- data.frame(
+  K     = k_values,
+  Price = put_prices
+)
+
+# 5. Tracé avec ggplot2
+library(ggplot2)
+
+ggplot(df_put, aes(x = K, y = Price)) +
+  geom_line(size = 1) +
+  labs(
+    title = "Prix de l'option de vente Black–Scholes en fonction du strike",
+    x     = "Prix d'exercice (K)",
+    y     = "Prix de l'option (Put)"
+  ) +
+  theme_minimal()
+
+```
+
+
+
+
+
 
 # Annexe
 mettre le code, une fois toute fini
