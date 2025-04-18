@@ -15,7 +15,8 @@ output:
 \clearpage  
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+options(OutDec = ",", digits = 4)
+knitr::opts_chunk$set(echo = TRUE, digits = 4)
 ```
 
 ```{r paquetages, message=FALSE, eval=TRUE, include=FALSE, echo = FALSE}
@@ -31,9 +32,9 @@ lapply(liste, require, character.only = TRUE)
 
 ```
 
-# 1.Approximation des paramètres
+# 1. Approximation des paramètres
 
-Le premier paramètre à estimer est la volatilité. Celle-ci est définit par
+Le premier paramètre à estimer est la volatilité. Celle-ci est définie par
 
 $$
 \hat{\sigma} = \frac{Stdev(ln(S_{t+h}/S_t))}{{h^{1/2}}}.
@@ -74,11 +75,11 @@ d_52per <- exp((r_log*1/52)-sig*sqrt(1/52))
 p_52per <- (exp(r_log*1/52)-d_52per)/(u_52per-d_52per)
 ```
 
-Comme les données fournies avec l'énoncé sont mensuelles, on a que $h = 1/12$. La valeur finale de $\hat{\sigma}$ est `r round(sig*100, 2)`%.
+Comme les données fournies avec l'énoncé sont mensuelles, on a que $h = 1/12$. La valeur finale de $\hat{\sigma}$ est `r sig*100`%.
 
-La valeur du taux sans risque est estimée grâce à la moyenne des taux d'intérêts effectifs annuels de chaque mois des cinq dernières années (2019-03 au 2024-02). L'estimation du taux sans risque a pour valeur $r =$ `r round(r*100, 2)`%. Comme le taux est utilisé sous forme continue dans les formules d'arbre binomial, $r$ a une valeur de `r round(r_log*100, 2)`% de façon continue.
+La valeur du taux sans risque est estimée grâce à la moyenne des taux d'intérêts effectifs annuels des bons du trésor de chaque mois des cinq dernières années (2019-03 au 2024-02). L'estimation du taux sans risque a pour valeur $r =$ `r r*100`%. Comme le taux est utilisé sous forme continue dans les formules d'arbre binomial, $r$ a une valeur de `r r_log*100`% de façon continue.
 
-Pour construire les arbres binomiaux, les valeurs de $u$, $d$ et $p$ sont nécessaires. Les formules suivantes permettent d'obtenir ces valeurs
+Pour construire les arbres binomiaux, les valeurs de $u$, $d$ et $p$ sont nécessaires. Il est également possible de déterminer le portefeuille réplicatif pour chacun des noeuds à l'aide des valeurs de $\Delta$ et $B$. Les formules suivantes permettent d'obtenir ces valeurs
 
 $$
 u = e^{(r-\delta)h+\sigma\sqrt{h}},
@@ -87,16 +88,26 @@ $$
 d = e^{(r-\delta)h-\sigma\sqrt{h}},
 $$
 $$
-p=\frac{e^{rh}-d}{u-d}.
+p=\frac{e^{rh}-d}{u-d},
+$$
+$$
+\Delta = \frac{f_u - f_d}{U - D} = \frac{f_u - f_d}{S(u-d)},
 $$
 
-Comme l'énoncé mentionne une absence de dividende, on suppose que $\delta = 0$.
+$$
+B = e^{-rh} \bigg( \frac{uf_d - df_u}{u-d} \bigg),
+$$
+$$
+f = \Delta S + B, \text{ où f se définit par C ou D}.
+$$
 
-Pour l'arbre binomial à 4 périodes, on obtient que $u =$ `r round(u_quatreper, 2)`, $d =$ `r round(d_quatreper, 2)` et $p =$ `r round(p_quatreper*100, 2)`%.
+Comme l'énoncé mentionne l'absence de dividendes, on suppose que $\delta = 0$.
 
-Pour l'arbre binomial à 52 périodes, on obtient que $u =$ `r round(u_52per, 2)`, $d =$ `r round(d_52per, 2)` et $p =$ `r round(p_52per*100, 2)`%.
+Pour l'arbre binomial à 4 périodes, on obtient que $u =$ `r u_quatreper`, $d =$ `r d_quatreper` et $p =$ `r p_quatreper*100`%.
 
-# 2.Arbres binomiaux
+Pour l'arbre binomial à 52 périodes, on obtient que $u =$ `r u_52per`, $d =$ `r d_52per` et $p =$ `r p_52per*100`%.
+
+# 2. Arbres binomiaux
 
 La présente section montre la démarche et les graphiques des arbres binomiaux demandés. La fonction `binomopt` du paquetage `derivmkts` a été grandement utilisée.
 
@@ -195,7 +206,6 @@ arbre <- function (s, k, v, r, tt, d, nstep, putopt = FALSE, american = TRUE,
 
 ```
 
-Les fonctions `binomplot` et  `binomopt` du paquetage `derivmkts` permettent de construire les arbres binomiaux demandés et d'en faire les graphes. 
 
 L'évolution du prix du sous-jacent pour l'option de vente européenne avec 4 périodes et un prix d'exercice de 95$ est illustré ci-dessous.
 
@@ -212,7 +222,7 @@ put95_4p = binomopt(s = 100, k = 95, v = sig, r = r_log, tt = 1, d = 0, nstep = 
 \textsf{Figure 1 : Arbre binomial de l'option de vente européenne à 4 périodes}
 \end{center}
 
-On relève que l'option de vente européenne est levée pour seulement deux prix du sous-jacent, soit les points verts de la Figure 1. Les informations pertinentes à l'arbre binomial sont soulevées directement sur la figure ci-dessus.
+À l'aide de la Figure 1, il est possible de constater que l'option de vente européenne est levée pour seulement deux prix du sous-jacent, soit les points verts. Les informations pertinentes de l'arbre binomial sont soulevées directement sur la Figure 1. Pour tous les arbres binomiaux présentés dans ce rapport, la taille des cercles est proportionnelle à la probabilité d'atteindre le noeud dans l'arbre.
 
 \newpage
 L'évolution du prix du sous-jacent pour l'option d'achat européenne avec 4 périodes avec un prix d'exercice de 110$ est illustré ci-dessous.
@@ -231,7 +241,7 @@ call110_4p = binomopt(s = 100, k = 110, v = sig, r = r_log, tt = 1, d = 0, nstep
 \textsf{Figure 2 : Arbre binomial de l'option d'achat européenne à 52 périodes}
 \end{center}
 
-On observe que l'option de d'achat européenne est levée pour seulement deux prix du sous-jacent. Les points où que l'option est levée sont en vert. Les informations pertinentes à l'arbre binomial sont soulevées directement sur le graphe ci-dessus.
+Par l'entremise de la Figure 2, on observe que l'option d'achat européenne est levée pour seulement deux prix du sous-jacent. Les points où l'option est levée sont en vert. Les informations pertinentes de l'arbre binomial sont soulevées directement sur la Figure 2.
 \newpage
 
 ## Arbres binomiaux à 52 périodes
@@ -247,52 +257,68 @@ call110_52p = binomopt(s = 100, k = 110, v = sig, r = r_log, tt = 1, d = 0, nste
 
 ```
 
-Le prix pour l'option de vente européenne avec un prix d'exercice de 95\$, avec l'arbre de 52 périodes, est de `r round(put95_52p, 4)`\$.En utilisant encore une fois un arbre de 52 périodes, lse prix de l'option d'achat européenne avec prix d'exercice de 110\$ est `r round(call110_52p, 4)`\$.
+Le prix de l'option de vente européenne calculé avec un abre binomial de 52 périodes et un prix d'exercice de 95\$ est de `r put95_52p`\$. En utilisant, encore une fois, un arbre de 52 périodes, le prix de l'option d'achat européenne avec prix d'exercice de 110\$ est `r call110_52p`\$.
 
 ```{r opt_asia, echo = FALSE, eval = TRUE}
+set.seed(20030811)
+call_asia <- arithavgpricecv(100, 110, sig, r_log, 1, 0, m=52, numsim=1000000)[[1]]
 
-call_asia <- AsianOption("arithmetic", "call", 100, 110, 0,
-                                r_log, 1, sig,
-                                   0, 1, 52)
-
-
-put_asia <-BarrierOption("upout", "put", 100, 95, 0, r_log, 1, sig, 105)
+put_asia <-putupout(100, 95, sig, r_log, 1, 0, 105)
 ```
 
-Les prix des options asiatiques ont été trouvés à l'aide de la fonction `AsianOption` du paquetage `RQuantLib`. Le prix de l'option d'achat arithmétique avec un prix d'exercice de 110\$ est `r round(call_asia$value, 2)`\$. Le prix de l'option de vente à barrière désactivante de 105\$ avec un prix d'exercice de 95\$ est `r round(put_asia$value, 2)`\$. 
+
+### Option d'achat asiatique
+Pour calculer l'option d’achat asiatique sur moyenne arithmétique, la formule est la suivante:
+$$C=Max(0;A(T)-k)$$
+Où 
+$$A(T)= \frac{1}{N} \sum_{i=1}^{N} S_{ih}, \text{ où}$$
+$$T : \text{échéance de l'option}$$
+$$h : \text{temps entre les périodes}$$
+$$N = \frac{T}{h}$$
+
+Contrairement aux options classiques présentées dans les sections précédentes de ce rapport, la valeur à l'échéance dépendera du prix moyen du sous-jacent. Ces options sont donc dépendantes de la trajectoire du prix du sous-jacent, ce qui n'est pas le cas des options classiques. Le fait de prendre une moyenne du prix a comme effet de réduire la volatilité par rapport au prix à l'échance. Plus le nombre d'observations N augmente dans l'option asiatique, plus son prix diminuera.
+
+
+Les prix des options asiatiques ont été trouvés à l'aide de la fonction `arithavgpricecv` du paquetage `derivmkts`.
+
+Le prix de l'option d'achat arithmétique avec un prix d'exercice de 110\$ est `r call_asia`\$. 
+
+### Option de vente à barrière désactivante
+Pour calculer l'option de vente à barrière désactivante, la formule est la suivante :  
+
+
+$$
+P = \max(0, K - S_T) 1_{\max_{0 \leq t \leq T} (S_t) < H}
+$$
+La valeur à l'échéance d'une option à barrière désactivante dépend du passage ou non de la trajectoire du prix du sous-jacent par la barrière. Si le prix du sous-jacent atteint le prix de la barrière au moins une fois d'ici l'échéance T, l'option sera désactivée. Dans le contexte de ce rapport, comme le prix inital du sous-jacent est inférieur à la barrière, il est question d'une option à barrière désactivante à la hausse.  
+
+
+Les prix de l'option de vente à barrière désactivante a été trouvé à l'aide de la fonction `putupout` du paquetage `derivmkts`.
+
+Le prix de l'option de vente à barrière désactivante de 105\$ avec un prix d'exercice de 95\$ est `r put_asia`\$. 
 
 \newpage
-# 3.Relation du prix de l'option et du prix d'exercice  
+# 3. Relation du prix de l'option et du prix d'exercice  
 ## Option d'achat  
 On constate la relation du prix à payer pour l'option d'achat européenne présentée
-à la section 2, celle avec le modèle 52 périodes, grâce à la Figure 3 ci-dessous.  
+à la section 2, celle avec le modèle 52 périodes et un prix initial de 100$, grâce à la Figure 3 ci-dessous.  
 
-```{r graphique achat 52 periodes, echo = FALSE, include = TRUE, fig.cap= "Graphique du prix d'une option d'achat européenne en fonction du prix d'exercice", fig.width=9, fig.height=5,results='hide'}
+```{r graphique achat 52 periodes, echo = FALSE, include = TRUE, fig.width=9, fig.height=5,results='hide'}
 k <- seq(from = 50, to = 250, by = 5)
 prix_achat <- sapply(k, function(k) binomopt(s = 100, k = k, v = sig, r = r_log, tt = 1, d = 0, nstep = 52, american = F,
                                         putopt = F, returntrees = T)$price)
 
 data_graph <- data.frame(prix_exercice = k, prix_call = prix_achat)
 
-graph_call <- ggplot(data_graph, aes(x = prix_exercice, y = prix_call)) +
-  geom_line(linewidth = 1.2, aes(color = "Prix initial = 100$, n = 52")) +
-  scale_color_manual(
-    name = "Paramètres",
-    values = c("Prix initial = 100$, n = 52" = "black")
-  ) +
+graph_call <- ggplot(data_graph, aes(x = prix_exercice, y = prix_call)) + geom_line() +
   labs(
     x = "Prix d'exercice ($)",
     y = "Prix de l'option ($)"
   ) +
-  theme_classic() +
   theme(
     plot.title = element_text(size = 12, face = "bold"),
-    axis.title = element_text(size = 12),
-    legend.position.inside = c(0.05, 0.95),
-    legend.background = element_rect(fill = "white", color = "black"),
-    legend.title = element_text(size = 10),
-    legend.text = element_text(size = 9)
-  )
+    axis.title = element_text(size = 12)
+  ) + theme_classic()
 graph_call
 
 ```
@@ -322,11 +348,7 @@ prix_put <- sapply(k, function(k) binomopt(s = 100, k = k, v = sig, r = r_log, t
 data_graph <- data.frame(prix_exercice = k, prix_put = prix_put)
 
 graph_put <- ggplot(data_graph, aes(x = prix_exercice, y = prix_put)) +
-  geom_line(linewidth = 1.2, aes(color = "Prix initial = 100$, n = 52")) +
-  scale_color_manual(
-    name = "Paramètres",
-    values = c("Prix initial = 100$, n = 52" = "black")
-  ) +
+  geom_line() +
   labs(
     x = "Prix d'exercice ($)",
     y = "Prix de l'option ($)"
@@ -334,12 +356,7 @@ graph_put <- ggplot(data_graph, aes(x = prix_exercice, y = prix_put)) +
   theme_classic() +
   theme(
     plot.title = element_text(size = 12, face = "bold"),
-    axis.title = element_text(size = 12),
-    legend.position.inside = c(0.05, 0.95),
-    legend.background = element_rect(fill = "white", color = "black"),
-    legend.title = element_text(size = 10),
-    legend.text = element_text(size = 9)
-  )
+    axis.title = element_text(size = 12))
 graph_put
 
 ```
@@ -353,7 +370,7 @@ le prix d'exercice est élevé, plus il y a de chance que l'option soit exercée
 En effet, il est plus avantageux de vendre l'actif à un prix supérieur que sa valeur
 actuelle, il y a donc plus de chance que l'option de vente soit exercée lorsque le prix 
 d'exercice augmente.  
-À l'inverse, il est moins avantageux de vendre l'actif à un prix inférieur que sa 
+À l'inverse, il est moins avantageux de vendre l'actif à un prix inférieur à sa 
 valeur actuelle. Donc, lorsque le prix d'exercice diminue, le prix de l'option 
 diminue, car il y a moins de chance qu'elle soit exercée.  
 
@@ -369,23 +386,28 @@ r_log <- log(1+r)
 arbre(s = 100, k = 95, v = sig, r = r_log, tt = 1, d = 0, nstep = 4, american = TRUE,
       putopt = TRUE, plotvalues = TRUE, plotarrows = TRUE, returnprice = TRUE,
       drawstrike = FALSE)
+
+put95_4p_ame = binomopt(s = 100, k = 95, v = sig, r = r_log, tt = 1, d = 0, nstep = 4, american = T,
+         putopt = T)
+
 ```
 \begin{center}
 \textsf{Figure 5 : Arbre binomial de l'option d'achat américaine à 4 périodes}
 \end{center}
 
-Les paramètres de l'arbre sont les suivants :  
+\newpage
 
-Une première différence entre l'option de vente américaine et l'option de vente européenne (présentée à la section 2) est leur prix d'achat. L'option de vente américaine a un prix d'achat plus élevée que l'option de vente européenne. Le prix de l'option européenne est de $6,24$ alors que celui de l'option américaine est $6,31$.  Ceci est dû au fait qu'il y a plus de chance que l'option de vente américaine soit levée en raison de la possibilité d'exercer l'option avant l'échéance. Cette différence est refletée dans chacun des noeuds. En effet, comme les prix des options sont différents à chacun des noeuds, les portefeuilles réplicatifs sont aussi différents.  
+Une première différence entre l'option de vente américaine et l'option de vente européenne (présentée à la section 2) est leur prix d'achat. L'option de vente américaine a un prix d'achat plus élevée que l'option de vente européenne. En effet, le prix de l'option européenne est de `r put95_4p`\$ alors que celui de l'option américaine est `r put95_4p_ame`\$.  Ceci est dû au fait qu'il y a plus de chance que l'option de vente américaine soit levée en raison de la possibilité d'exercer l'option avant l'échéance. Cette différence est refletée dans chacun des noeuds. Effectivement, comme les prix des options sont différents à chacun des noeuds, les paramètres des portefeuilles réplicatifs sont aussi différents.  
 
-Cela introduit la deuxième différence, soit la possibilitée que les options américaines soient levées avant l'exercice. Comme il est possible de constater sur la Figure 5 l'option de vente américaine est levée hâtivement à $0,8$ année, tandis que l'option de vente européenne ne peut qu'être levé qu'à l'échéance. Cependant, une similitude est que les deux options sont levées à l'échéance aux mêmes prix du sous-jacent. C'est-à-dire que comme le prix d'exercice est le même pour les deux options, leur exercice à l'échéance est le même.  
+Cela introduit la deuxième différence, soit la possibilité que les options américaines soient levées avant l'échéance. Comme il est possible de constater sur la Figure 5, l'option de vente américaine est levée hâtivement à la $3^{e}$ période, tandis que l'option de vente européenne ne peut qu'être levée qu'à l'échéance. Dans le cas de la Figure 5, il est intéressant de lever l'option hâtivement à la $3^{e}$ période, car le prix de l'option, soit 23,44\$, est plus élevé que le prix d'exercice, soit $max(95 - St_t,0) = max(95-71,6,0) = 23,4\$$. Cependant, si l'option américaine n'est pas levée hâtivement, elle sera exercée à l'échéance comme l'option européenne. 
 
-Une ressemblance entre les deux options est représentée sur le haut du graphique. En effet, aucune des options n'est exercée pour les valeurs supérieures de l'actif, donc il n'y a aucun portefeuille réplicatif et aucune possibilité d'exercice hâtif. Ainsi, lorsque le sous-jacent augmente de valeur, aucune option n'est exercée.  Ceci est expliqué par le fait que les paramètres pour les deux options soient les mêmes. 
+Pour finir, les paramètres $u$, $d$ et $p$ sont les mêmes pour l'arbre européen et américain. Les paramètres sont présentés à la section 1 du présent rapport.
 
 
 # 5. Modèle de Black-Scholes
 
-La présente section a pour but de montrer les prix des options européennes du numéro 2 mais sous l'équation du modèle de Black-Scholes. 
+La présente section a pour but de montrer les prix des options européennes de la section 2 mais sous l'équation du modèle de Black-Scholes. 
+
 ## Option d'achat
 
 L'option d'achat du modèle de Black-Scholes se définit de la façon suivante
@@ -414,7 +436,7 @@ call_BS110 <- call_BS(100, 110, sig, r_log, 1, 0)
 
 ```
 
-Ainsi, la valeur de l'option d'achat $C(100,110,0.2338,0.02137, 1, 0)$ = `r round(call_BS110, 2)`.
+Ainsi, la valeur de l'option d'achat est $C(100,110,0.2338,0.02137, 1, 0)$ = `r call_BS110`\$.
 
 ## Option de vente
 L'option de vente du modèle de Black-Scholes se définit de la façon suivante
@@ -437,108 +459,131 @@ put_BS95 <- put_BS(100, 95, sig, r_log, 1, 0)
 
 ```
 
-Ainsi, la valeur de l'option de vente $C(100, 95,0.2338,0.02137, 1, 0)$ = `r round(put_BS95, 2)`.
+Ainsi, la valeur de l'option de vente est $P(100, 95,0.2338,0.02137, 1, 0)$ = `r put_BS95`\$.
 
 ## Comparaison entre le modèle d'arbre binomial et le modèle de Black-Scholes
 Le modèle de Black-Scholes se veut l'équivalent continu du modèle de l'arbre binomial. C'est-à-dire, il s'agit de l'équivalent d'un arbre binomial avec un nombre infini de périodes dans un intervalle de temps fini.
 
-Ainsi, à partir d'un certain nombre de périodes, le prix de l'option, obtenu avec l'arbre binomial, aura tendance à converger vers un prix qui est celui obtenu avec la formule de Black-Scholes. 
+Ainsi, à partir d'un certain nombre de périodes, le prix de l'option, obtenu avec l'arbre binomial, aura tendance à converger vers un prix obtenu avec la formule de Black-Scholes. 
 
-Il est donc intéressant de comparer les valeurs des options européennes obtenues avec les arbres binomiales précedement avec ceux obtenus avec le modèle de Black-Shcoles. 
+Il est donc intéressant de comparer les prix des options européennes calculés avec les arbres binomiaux à ceux donnés par le modèle de Black-Scholes. 
 
-Justement, il est possible de constater que la valeur de l'option d'achat européenne du modèle binomial à 4 périodes s'éloigne davantage de la valeur obtenue avec le modèle de Black-Scholes que celle obtenue avec l'arbre binomial à 52 périodes.
+On observe que la valeur de l’option d’achat européenne obtenue avec le modèle binomial à 4 périodes, soit `r call110_4p`\$, s'écarte sensiblement de la valeur de l'option d'achat européenne donnée par le modèle de Black-Scholes, soit `r call_BS110`\$.
 
-En effet, la valeur obtenu avec l'arbre à 4 périodes est `r round(call110_4p, 4)` tandis que celle obtenue avec l'arbre à 52 périodes est `r round(call110_52p, 4)`. Cela s’explique par le fait qu’à mesure que le nombre de périodes augmente dans l’arbre binomial, le prix calculé de l’option tend à se rapprocher de celui obtenu avec le modèle de Black-Scholes.
+À l'inverse, lorsqu'on compare le modèle de Black-Scholes avec l'arbre binomiale à 52 périodes, on observe que la valeur de l'option d'achat obtenue avec l'arbre binomial, soit `r call110_52p`\$, converge vers la valeur obtenue avec le modèle de Black-Scholes, soit  `r call_BS110`\$. Cette converge est illustrée sur la Figure X.
 
-Il est possible de voir que la valeur obtenue avec l'arbre à 52 périodes converge vers la valeur obtenue avec le modèle de Black-Scholes, soit `r round(call_BS110, 4)`. Ce qui illustre bien la convergence mentionnée plus haut.
+```{r, convergence call, include=T, echo=F, fig.keep='last', message=FALSE,warning=FALSE}
+s     <- 100    
+k     <- 110     
+tt    <- 1     
+d     <- 0      
 
-Des observations similaires peuvent être faites pour l’option de vente européenne. En effet, on remarque que la valeur obtenue à l’aide du modèle binomial à 4 périodes s’éloigne davantage de celle fournie par le modèle de Black-Scholes, comparativement à celle obtenue avec l’arbre à 52 périodes. Plus précisément, la valeur de l’arbre à 4 périodes est de `r round(put95_4p, 4)`, tandis que celle calculée avec l'arbre à 52 périodes est de `r round(put95_52p, 4)`.
 
-Par ailleurs, la valeur obtenue avec l’arbre à 52 périodes tend à converger vers celle donnée par la formule de Black-Scholes, soit `r round(put_BS95, 4)`, ce qui confirme à nouveau la convergence lorsque le nombre de périodes est suffisamment élevé.
+bs_call <- call_BS(s = s, k = k, sig = sig, r_log = r_log, t = tt, div = d)
 
-## Lien entre numéro 3  
+# Boucle sur n pas pour le binomial
+n_max       <- 100
+binom_prices_call <- sapply(1:n_max, function(n) {
+  arbre(
+    s           = s,
+    k           = k,
+    v           = sig,
+    r           = r_log,
+    tt          = tt,
+    d           = d,
+    nstep       = n,
+    putopt      = FALSE,    
+    american    = FALSE,   
+    returnprice = TRUE     
+  )
+})
 
-```{r comparaison call}
-# Votre fonction Black–Scholes
-call_BS <- function(s, k, sig, r_log, t, div) {
-  d1 <- (log(s/k) + (r_log - div + sig^2/2)*t) / (sig*sqrt(t))
-  d2 <- d1 - sig*sqrt(t)
-  s * exp(-div*t) * pnorm(d1) - k * exp(-r_log*t) * pnorm(d2)
-}
 
-# 1. Définir les paramètres du marché
-s     <- 100    # cours actuel de l'actif
-sig   <- 0.2    # volatilité
-r_log <- 0.05   # taux sans risque continu
-t     <- 1      # maturité en années
-div   <- 0.02   # rendement du dividende (continu)
-
-# 2. Générer une séquence de prix d'exercice
-k_values <- seq(50, 150, by = 1)
-
-# 3. Calculer le prix de l'option pour chaque K
-call_prices <- call_BS(s, k_values, sig, r_log, t, div)
-
-# 4. Mettre en forme en data.frame
 df <- data.frame(
-  K     = k_values,
-  Price = call_prices
+  nstep    = 1:n_max,
+  Binomial = binom_prices_call
 )
 
-# 5. Tracer avec ggplot2
-library(ggplot2)
 
-ggplot(df, aes(x = K, y = Price)) +
-  geom_line(size = 1) +
+convergence_call <- ggplot(df, aes(x = nstep, y = Binomial)) +
+  geom_line(color = "forestgreen", size = 1) +
+  geom_hline(yintercept = bs_call,
+             linetype    = "dashed",
+             color       = "red",
+             size        = 1) +
+  annotate("text",
+           x     = round(n_max * 0.8),
+           y     = bs_call + 0.05,
+           label = "Black–Scholes",
+           color = "red") +
   labs(
-    title = "Prix de l'option d'achat Black–Scholes en fonction du strike",
-    x     = "Prix d'exercice (K)",
-    y     = "Prix de l'option (Call)"
+    x     = "Nombre de périodes",
+    y     = "Prix de l'option"
   ) +
-  theme_minimal()
-
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+convergence_call
 ```
 
-```{r comparaison put}
-# Fonction Black–Scholes pour le put
-put_BS <- function(s, k, sig, r_log, t, div) {
-  d1 <- (log(s/k) + (r_log - div + sig^2/2)*t) / (sig*sqrt(t))
-  d2 <- d1 - sig*sqrt(t)
-  k * exp(-r_log*t) * pnorm(-d2) - s * exp(-div*t) * pnorm(-d1)
-}
 
-# 1. Paramètres du marché (à ajuster si besoin)
-s     <- 100    # cours actuel de l'actif
-sig   <- 0.2    # volatilité
-r_log <- 0.05   # taux sans risque continu
-t     <- 1      # maturité en années
-div   <- 0.02   # rendement du dividende (continu)
+Ces constats ilustrent bien qu'au fur et à mesure que le nombre de périodes augmente dans l’arbre binomial, le prix calculé de l’option tend à se rapprocher de celui obtenu avec le modèle de Black-Scholes.
 
-# 2. Grille de prix d'exercice
-k_values <- seq(50, 150, by = 1)
+Des observations similaires peuvent être faites pour l’option de vente européenne. En effet, on remarque que la valeur de l'option de vente obtenue à partir du modèle binomial à 4 périodes, soit `r put95_4p`\$ s’éloigne sensiblement de celle fournie par le modèle de Black-Scholes, soit `r put_BS95`\$.
 
-# 3. Calcul des prix de l'option de vente
-put_prices <- put_BS(s, k_values, sig, r_log, t, div)
+À l'inverse, lorsqu'on compare le modèle de Black-Scholes avec l'arbre binomiale à 52 périodes, on observe que la valeur de l'option de vente obtenue avec l'arbre binomial, soit `r put95_52p`\$, converge vers la valeur obtenue avec le modèle de Black-Scholes, soit  `r put_BS95`\$. Cela confirme à nouveau la convergence lorsque le nombre de périodes est suffisamment élevé. De plus, la convergence est illustrée sur la Figue X.
 
-# 4. Préparation du data.frame
-df_put <- data.frame(
-  K     = k_values,
-  Price = put_prices
+```{r, convergence vente, include=T, echo=F, fig.keep='last', message=FALSE,warning=FALSE}
+s     <- 100    
+k     <- 95     
+tt    <- 1     
+d     <- 0      
+
+
+bs_put <- put_BS(s = s, k = k, sig = sig, r_log = r_log, t = tt, div = d)
+
+# Boucle sur n pas pour le binomial
+n_max       <- 100
+binom_prices <- sapply(1:n_max, function(n) {
+  arbre(
+    s           = s,
+    k           = k,
+    v           = sig,
+    r           = r_log,
+    tt          = tt,
+    d           = d,
+    nstep       = n,
+    putopt      = TRUE,    
+    american    = FALSE,   
+    returnprice = TRUE     
+  )
+})
+
+
+df <- data.frame(
+  nstep    = 1:n_max,
+  Binomial = binom_prices
 )
 
-# 5. Tracé avec ggplot2
-library(ggplot2)
 
-ggplot(df_put, aes(x = K, y = Price)) +
-  geom_line(size = 1) +
-  labs(
-    title = "Prix de l'option de vente Black–Scholes en fonction du strike",
-    x     = "Prix d'exercice (K)",
-    y     = "Prix de l'option (Put)"
+convergence <- ggplot(df, aes(x = nstep, y = Binomial)) +
+  geom_line(color = "forestgreen", size = 1) +
+  geom_hline(yintercept = bs_put,
+             linetype    = "dashed",
+             color       = "red",
+             size        = 1) +
+  annotate("text",
+           x     = round(n_max * 0.8),
+           y     = bs_put + 0.05,
+           label = "Black–Scholes",
+           color = "red") +
+  labs(x     = "Nombre de périodes",
+    y     = "Prix de l'option"
   ) +
-  theme_minimal()
-
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+convergence
 ```
+
 
 
 
