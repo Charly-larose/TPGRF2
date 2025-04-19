@@ -470,7 +470,10 @@ Il est donc intéressant de comparer les prix des options européennes calculés
 
 On observe que la valeur de l’option d’achat européenne obtenue avec le modèle binomial à 4 périodes, soit `r call110_4p`\$, s'écarte sensiblement de la valeur de l'option d'achat européenne donnée par le modèle de Black-Scholes, soit `r call_BS110`\$.
 
-À l'inverse, lorsqu'on compare le modèle de Black-Scholes avec l'arbre binomiale à 52 périodes, on observe que la valeur de l'option d'achat obtenue avec l'arbre binomial, soit `r call110_52p`\$, converge vers la valeur obtenue avec le modèle de Black-Scholes, soit  `r call_BS110`\$. Cette converge est illustrée sur la Figure X.
+À l'inverse, lorsqu'on compare le modèle de Black-Scholes avec l'arbre binomiale à 52 périodes, on observe que la valeur de l'option d'achat obtenue avec l'arbre binomial, soit `r call110_52p`\$, converge vers la valeur obtenue avec le modèle de Black-Scholes, soit  `r call_BS110`\$. Cette converge est illustrée sur la Figure 6.
+
+
+
 
 ```{r, convergence call, include=T, echo=F, fig.keep='last', message=FALSE,warning=FALSE}
 s     <- 100    
@@ -524,13 +527,18 @@ convergence_call <- ggplot(df, aes(x = nstep, y = Binomial)) +
   theme(plot.title = element_text(hjust = 0.5))
 convergence_call
 ```
+\begin{center}
+\textsf{Figure 6 : Modèle Black-Scholes et modèle arbre binomial pour une option d'achat européenne}
+\end{center}
 
 
 Ces constats ilustrent bien qu'au fur et à mesure que le nombre de périodes augmente dans l’arbre binomial, le prix calculé de l’option tend à se rapprocher de celui obtenu avec le modèle de Black-Scholes.
 
 Des observations similaires peuvent être faites pour l’option de vente européenne. En effet, on remarque que la valeur de l'option de vente obtenue à partir du modèle binomial à 4 périodes, soit `r put95_4p`\$ s’éloigne sensiblement de celle fournie par le modèle de Black-Scholes, soit `r put_BS95`\$.
 
-À l'inverse, lorsqu'on compare le modèle de Black-Scholes avec l'arbre binomiale à 52 périodes, on observe que la valeur de l'option de vente obtenue avec l'arbre binomial, soit `r put95_52p`\$, converge vers la valeur obtenue avec le modèle de Black-Scholes, soit  `r put_BS95`\$. Cela confirme à nouveau la convergence lorsque le nombre de périodes est suffisamment élevé. De plus, la convergence est illustrée sur la Figue X.
+À l'inverse, lorsqu'on compare le modèle de Black-Scholes avec l'arbre binomiale à 52 périodes, on observe que la valeur de l'option de vente obtenue avec l'arbre binomial, soit `r put95_52p`\$, converge vers la valeur obtenue avec le modèle de Black-Scholes, soit  `r put_BS95`\$. Cela confirme à nouveau la convergence lorsque le nombre de périodes est suffisamment élevé. De plus, la convergence est illustrée sur la Figue 7.
+
+
 
 ```{r, convergence vente, include=T, echo=F, fig.keep='last', message=FALSE,warning=FALSE}
 s     <- 100    
@@ -583,10 +591,61 @@ convergence <- ggplot(df, aes(x = nstep, y = Binomial)) +
   theme(plot.title = element_text(hjust = 0.5))
 convergence
 ```
+\begin{center}
+\textsf{Figure 7 : Modèle Black-Scholes et modèle arbre binomial pour une option de vente européenne}
+\end{center}
+  
+À la section 3, il avait été démontré que la relation entre le prix d'exercice et le prix à payer pour une option d'achat européenne était inversement proportionnelle, pour une modèle d'arbre binomial (voir la Figure 3). Il est possible d'émettre le même constat avec le modèle Black-Scholes. Il est possible de constater cette affirmation par la Figure 8. C'est le résultat attendu puisque le modèle Black-Scholes est l'équivalent continu du modèle d'arbre binomial.  
+
+
+```{r, echo = FALSE}
+k <- seq(from = 50, to = 250, by = 5)
+prix_achat_BS <- sapply(k, function(k) call_BS(s = s, k = k, sig = sig, r_log = r_log, t = tt, div = d))
+
+data_graph_BS <- data.frame(prix_exercice = k, prix_call_BS = prix_achat_BS)
+
+graph_call_BS <- ggplot(data_graph_BS, aes(x = prix_exercice, y = prix_call_BS)) + geom_line() +
+  labs(
+    x = "Prix d'exercice ($)",
+    y = "Prix de l'option ($)"
+  ) +
+  theme(
+    plot.title = element_text(size = 12, face = "bold"),
+    axis.title = element_text(size = 12)
+  ) + theme_classic()
+graph_call_BS
+```
+
+\begin{center}
+\textsf{Figure 8 : Coût de l'option d'achat européenne avec le modèle Black-Scholes en fonction du prix}
+\end{center}
+
+Il avait aussi été affirmé que le prix d'achat d'une option de vente européenne et le prix d'exercice avait une relation directement proportionnelle. Il est, encore une fois, posssible d'émettre le même constat avec le modèle Black-Scholes. Cette relation est illustrée dans la Figure 9.  
 
 
 
+```{r, echo= FALSE}
+k <- seq(from = 0, to = 200, by = 5)
+prix_put_BS <- sapply(k, function(k) put_BS(s = s, k = k, sig = sig, r_log = r_log, t = tt, div = d))
 
+data_graph_BS <- data.frame(prix_exercice = k, prix_put_BS = prix_put_BS)
+
+graph_put_BS <- ggplot(data_graph_BS, aes(x = prix_exercice, y = prix_put_BS)) +
+  geom_line() +
+  labs(
+    x = "Prix d'exercice ($)",
+    y = "Prix de l'option ($)"
+  ) +
+  theme_classic() +
+  theme(
+    plot.title = element_text(size = 12, face = "bold"),
+    axis.title = element_text(size = 12))
+graph_put_BS
+
+```
+\begin{center}
+\textsf{Figure 9 : Coût de l'option de vente européenne avec le modèle Black-Scholes en fonction du prix}
+\end{center}
 
 
 
