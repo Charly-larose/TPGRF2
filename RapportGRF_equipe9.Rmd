@@ -294,7 +294,7 @@ $$
 La valeur à l'échéance d'une option à barrière désactivante dépend du passage ou non de la trajectoire du prix du sous-jacent par la barrière. Si le prix du sous-jacent atteint le prix de la barrière au moins une fois d'ici l'échéance T, l'option sera désactivée. Dans le contexte de ce rapport, comme le prix inital du sous-jacent est inférieur à la barrière, il est question d'une option à barrière désactivante à la hausse.  
 
 
-Les prix de l'option de vente à barrière désactivante a été trouvé à l'aide de la fonction `putupout` du paquetage `derivmkts`.
+Le prix de l'option de vente à barrière désactivante a été trouvé à l'aide de la fonction `putupout` du paquetage `derivmkts`.
 
 Le prix de l'option de vente à barrière désactivante de 105\$ avec un prix d'exercice de 95\$ est `r put_asia`\$. 
 
@@ -398,7 +398,7 @@ put95_4p_ame = binomopt(s = 100, k = 95, v = sig, r = r_log, tt = 1, d = 0, nste
 
 \newpage
 
-Une première différence entre l'option de vente américaine et l'option de vente européenne (présentée à la section 2) est leur prix d'achat. L'option de vente américaine a un prix d'achat plus élevée que l'option de vente européenne. En effet, le prix de l'option européenne est de `r put95_4p`\$ alors que celui de l'option américaine est `r put95_4p_ame`\$.  Ceci est dû au fait qu'il y a plus de chance que l'option de vente américaine soit levée en raison de la possibilité d'exercer l'option avant l'échéance. Cette différence est refletée dans chacun des noeuds. Effectivement, comme les prix des options sont différents à chacun des noeuds, les paramètres des portefeuilles réplicatifs sont aussi différents.  
+Une première différence entre l'option de vente américaine et l'option de vente européenne (présentée à la section 2) est leur prix d'achat. L'option de vente américaine a un prix d'achat plus élevé que l'option de vente européenne. En effet, le prix de l'option européenne est de `r put95_4p`\$ alors que celui de l'option américaine est `r put95_4p_ame`\$.  Ceci est dû au fait qu'il y a plus de chance que l'option de vente américaine soit levée en raison de la possibilité d'exercer l'option avant l'échéance. Cette différence est refletée dans chacun des noeuds. Effectivement, comme les prix des options sont différents à chacun des noeuds, les paramètres des portefeuilles réplicatifs sont aussi différents.  
 
 Cela introduit la deuxième différence, soit la possibilité que les options américaines soient levées avant l'échéance. Comme il est possible de constater sur la Figure 5, l'option de vente américaine est levée hâtivement à la $3^{e}$ période, tandis que l'option de vente européenne ne peut qu'être levée qu'à l'échéance. Dans le cas de la Figure 5, il est intéressant de lever l'option hâtivement à la $3^{e}$ période, car le prix de l'option, soit 23,44\$, est plus élevé que le prix d'exercice, soit $max(95 - St_t,0) = max(95-71,6,0) = 23,4\$$. Cependant, si l'option américaine n'est pas levée hâtivement, elle sera exercée à l'échéance comme l'option européenne. 
 
@@ -414,7 +414,7 @@ La présente section a pour but de montrer les prix des options européennes de 
 L'option d'achat du modèle de Black-Scholes se définit de la façon suivante
 
 $$
-C(S,K,\sigma,r,T,\delta) = Se^{-\delta T}N(d_{1}) - Ke^{-rT}N(d_{2}),
+C(S,K,\sigma,r,T,\delta) = Se^{-\delta T}N(d_{1}) - Ke^{-rT}N(d_{2}).
 $$
 Les valeurs de $d_1$ et $d_2$ sont
 $$
@@ -443,7 +443,7 @@ Ainsi, la valeur de l'option d'achat est $C(100,110,0.2338,0.02137, 1, 0)$ = `r 
 L'option de vente du modèle de Black-Scholes se définit de la façon suivante
 
 $$
-P(S,K,\sigma,r,T,\delta) = Ke^{-r T}N(-d_{2}) - Se^{-\delta T}N(-d_{1}),
+P(S,K,\sigma,r,T,\delta) = Ke^{-r T}N(-d_{2}) - Se^{-\delta T}N(-d_{1}).
 $$
 Les valeurs de $d_1$ et $d_2$ sont définies de la même façon que pour l'option d'achat.
 
@@ -471,7 +471,7 @@ Il est donc intéressant de comparer les prix des options européennes calculés
 
 On observe que la valeur de l’option d’achat européenne obtenue avec le modèle binomial à 4 périodes, soit `r call110_4p`\$, s'écarte sensiblement de la valeur de l'option d'achat européenne donnée par le modèle de Black-Scholes, soit `r call_BS110`\$.
 
-À l'inverse, lorsqu'on compare le modèle de Black-Scholes avec l'arbre binomiale à 52 périodes, on observe que la valeur de l'option d'achat obtenue avec l'arbre binomial, soit `r call110_52p`\$, converge vers la valeur obtenue avec le modèle de Black-Scholes, soit  `r call_BS110`\$. Cette converge est illustrée sur la Figure 6.
+À l'inverse, lorsqu'on compare le modèle de Black-Scholes avec l'arbre binomiale à 52 périodes, on observe que la valeur de l'option d'achat obtenue avec l'arbre binomial, soit `r call110_52p`\$, converge vers la valeur obtenue avec le modèle de Black-Scholes, soit  `r call_BS110`\$. Cette convergence est illustrée sur la Figure 6.
 
 
 
@@ -606,7 +606,7 @@ convergence
 \textsf{Figure 7 : Convergence du prix de l'option de vente européenne obtenu avec le modèle de l'arbre binomiale vers le prix obtenu avec le modèle de Black-Scholes.}
 \end{center}
   
-À la section 3, il avait été démontré que la relation entre le prix d'exercice et le prix à payer pour une option d'achat européenne était inversement proportionnelle, pour une modèle d'arbre binomial (voir la Figure 3). Il est possible d'émettre le même constat avec le modèle Black-Scholes. Il est possible de constater cette affirmation par la Figure 8. C'est le résultat attendu puisque le modèle Black-Scholes est l'équivalent continu du modèle d'arbre binomial.  
+À la section 3, il avait été démontré que la relation entre le prix d'exercice et le prix à payer pour une option d'achat européenne était inversement proportionnelle, pour une modèle d'arbre binomial (voir la Figure 3). Il est possible d'émettre le même constat avec le modèle Black-Scholes. Il est possible de constater cette affirmation par la Figure 8. C'est le résultat attendu, puisque le modèle Black-Scholes est l'équivalent continu du modèle d'arbre binomial.  
 
 
 ```{r, echo = FALSE, fig.width=5, fig.height=3}
